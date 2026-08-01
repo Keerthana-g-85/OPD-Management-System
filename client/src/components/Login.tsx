@@ -3,10 +3,13 @@ import { Box } from "@mui/system";
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router";
+import { useDispatch } from "react-redux";
+import { addToken } from "../redux/LoginSlice";
 export default function Login() {
   const [login, setLogin] = useState({ email: "", password: "" });
-
   const nav = useNavigate();
+  const dispatch = useDispatch();
+
   async function handleLogin() {
     try {
       const response = await axios.post("http://localhost:3040/graphql", {
@@ -25,14 +28,15 @@ export default function Login() {
     }
   `,
       });
-      console.log(response)
-      console.log(response.data.data.loginUser.success)
-      if (response.data.data.loginUser.success === true){
+      console.log(response);
+      console.log(response.data.data.loginUser.success);
+      if (response.data.data.loginUser.success === true) {
+        dispatch(addToken(response.data.data.loginUser.accesstoken));
+        localStorage.setItem("token", response.data.data.loginUser.accesstoken);
         nav("/dashboard");
       }
-    
     } catch (error) {
-        console.log(error)
+      console.log(error);
     }
   }
   return (
