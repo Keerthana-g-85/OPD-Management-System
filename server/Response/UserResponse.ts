@@ -11,4 +11,5 @@ export default class CreateUserResponse{
 
     @Field(()=> Users)
     users? : Users
+
 }

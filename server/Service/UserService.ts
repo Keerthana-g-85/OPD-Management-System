@@ -1,6 +1,9 @@
 import type CreateUserArguments from "../Arguments/User/CreateUser.js";
+import type LoginUser from "../Arguments/User/LoginUser.js";
 import { database } from "../database.js";
 import Users from "../models/Users.js";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
 export default class UserService {
   private userRepo = database.getRepository(Users);
@@ -8,22 +11,30 @@ export default class UserService {
     name,
     email,
     age,
-
     gender,
     address,
     phone,
     password,
   }: CreateUserArguments) {
     try {
+      const userEmail = await this.userRepo.findOneBy({ email: email });
+      if (userEmail) {
+        return {
+          success: false,
+          message: "User already present",
+        };
+      }
+
+      const salt = bcrypt.genSaltSync(10);
+      const hashPassword = await bcrypt.hash(password, salt);
       const user = this.userRepo.create({
         name,
         email,
         age,
-
         gender,
         address,
         phone,
-        password,
+        password: hashPassword,
       });
       await this.userRepo.save(user);
 
@@ -54,6 +65,44 @@ export default class UserService {
       return {
         success: false,
         message: "Error while getting the user",
+      };
+    }
+  }
+
+  async loginUser({ email, password }: LoginUser) {
+    try {
+      const user = await this.userRepo.findOneBy({ email: email });
+      if (!user) {
+        return {
+          success: false,
+          message: "Email not yet registred",
+        };
+      }
+      console.log(user);
+
+      const isPassword = await bcrypt.compare(password, user.password);
+      if (!isPassword) {
+        return {
+          success: false,
+          message: "Invalid Password",
+        };
+      }
+
+      const accesstoken = jwt.sign(
+        { id: user.id, name: user.name },
+        process.env.JW_SECRET as string,
+        { expiresIn: "2hr" },
+      );
+      return {
+        success: true,
+        message: "User successfully logged in",
+        accesstoken,
+      };
+    } catch (error) {
+        console.log(error)
+      return {
+        success: false,
+        message: "Error while loging in",
       };
     }
   }

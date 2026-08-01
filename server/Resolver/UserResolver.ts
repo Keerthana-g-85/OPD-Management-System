@@ -3,6 +3,8 @@ import UserService from "../Service/UserService.js";
 import CreateUserArguments from "../Arguments/User/CreateUser.js";
 import CreateUserResponse from "../Response/UserResponse.js";
 import Users from "../models/Users.js";
+import LoginUser from "../Arguments/User/LoginUser.js";
+import LoginResponse from "../Response/LoginResponse.js";
 
 const userService = new UserService();
 @Resolver(() => Users)
@@ -15,6 +17,11 @@ export default class UserResolver {
   @Query(()=>CreateUserResponse)
   getUser(){
     return userService.getUser()
+  }
+
+  @Mutation(()=>LoginResponse)
+  loginUser(@Arg("input",()=> LoginUser) input: LoginUser){
+    return userService.loginUser(input)
   }
 }
 
