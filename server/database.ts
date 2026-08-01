@@ -1,6 +1,7 @@
 import { DataSource, type DataSourceOptions } from "typeorm";
 
 import dotenv from "dotenv";
+import Users from "./models/Users.js";
 
 dotenv.config();
 
@@ -12,7 +13,7 @@ export const database = new DataSource({
   password: process.env.DB_PASSWORD as string,
   port: Number(process.env.DB_PORT),
   synchronize: true,
-  entities: [],
+  entities: [Users],
   migrations: ["./migrations/*.ts"],
 });
 
