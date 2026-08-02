@@ -1,4 +1,4 @@
-import { Field, Int, ObjectType } from "type-graphql";
+import { Field, ID, Int, ObjectType } from "type-graphql";
 import {
   Entity,
   Column,
@@ -7,10 +7,17 @@ import {
 } from "typeorm";
 import { CreateDateColumn } from "typeorm";
 
+export enum Role {
+  patient = "patient",
+  admin = "admin",
+  doctor = "doctor",
+  receptionists = "receptionists",
+  pharmacists = "pharmacists",
+}
 @ObjectType()
 @Entity()
 export default class Users {
-  @Field(() => String)
+  @Field(() => ID)
   @PrimaryGeneratedColumn("uuid")
   id!: string;
 
@@ -38,9 +45,13 @@ export default class Users {
   @Column({ type: "varchar" })
   address!: string;
 
-  @Field(()=> Int)
-  @Column({type:"int"})
-  phone! : number
+  @Field(() => Int)
+  @Column({ type: "int" })
+  phone!: number;
+
+  @Field(()=>Role)
+  @Column({type : "enum", enum : Role})
+  role!: Role;
 
   @Field(() => Date)
   @CreateDateColumn()
