@@ -100,6 +100,11 @@ export default function Home() {
       icon: <AddBoxIcon />,
       path: "/dashboard",
     },
+    {
+      text: "Add Doctor",
+      icon: <AddBoxIcon />,
+      path: "/add_doctor",
+    },
   ];
 
   return (
