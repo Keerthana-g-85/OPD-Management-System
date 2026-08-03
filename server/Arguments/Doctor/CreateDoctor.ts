@@ -1,8 +1,8 @@
-import { Field, InputType, Int } from "type-graphql";
+import { Field, ID, InputType, Int } from "type-graphql";
 import { Role } from "../../models/Users.js";
 
 @InputType()
-export default class CreateUserArguments {
+export default class CreateDoctorArguments {
   @Field(() => String)
   name!: string;
 
@@ -27,6 +27,18 @@ export default class CreateUserArguments {
   @Field(() => Role)
   role!: Role;
 
+  @Field(()=>String)
+  image! : string
+
+  @Field(()=>ID)
+  department! : string ;
+
   @Field(() => String)
-  image!: string;
+  qualification!: string;
+
+  @Field(() => Int)
+  experience!: number;
+
+  @Field(() => Int)
+  charges!: number;
 }

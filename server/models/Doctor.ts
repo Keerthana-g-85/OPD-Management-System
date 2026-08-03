@@ -2,6 +2,7 @@ import { ObjectType, Field, Int, ID } from "type-graphql";
 import {
   Column,
   Entity,
+  JoinColumn,
   ManyToOne,
   OneToMany,
   OneToOne,
@@ -19,19 +20,21 @@ export default class Doctor {
 
   @Field(() => Users)
   @OneToOne(() => Users, { onDelete: "CASCADE" })
+  @JoinColumn({name : "user_id"})
   users!: Users;
 
   @Field(() => Department)
   @ManyToOne(() => Department)
+  @JoinColumn({ name: "department_id" })
   department!: Department;
 
   @Field(() => String)
   @Column({ type: "varchar" })
   qualification!: string;
 
-  @Field(() => String)
-  @Column({ type: "varchar" })
-  experience!: string;
+  @Field(() => Int)
+  @Column({ type: "int" })
+  experience!: number;
 
   @Field(() => Int)
   @Column({ type: "int" })

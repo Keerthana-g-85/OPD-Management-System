@@ -101,9 +101,19 @@ export default function Home() {
       path: "/dashboard",
     },
     {
-      text: "Add Doctor",
+      text: "Doctor",
       icon: <AddBoxIcon />,
-      path: "/add_doctor",
+      path: "/doctors",
+    },
+    {
+      text: "Receptionist",
+      icon: <AddBoxIcon />,
+      path: "/receptionist",
+    },
+    {
+      text: "Parmacist",
+      icon: <AddBoxIcon />,
+      path: "/pharmacist",
     },
   ];
 

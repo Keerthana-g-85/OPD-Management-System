@@ -1,4 +1,4 @@
-import { Mutation, Arg, Resolver,Query } from "type-graphql";
+import { Mutation, Arg, Resolver, Query } from "type-graphql";
 import UserService from "../Service/UserService.js";
 import CreateUserArguments from "../Arguments/User/CreateUser.js";
 import CreateUserResponse from "../Response/UserResponse.js";
@@ -14,14 +14,23 @@ export default class UserResolver {
     return userService.createUser(input);
   }
 
-  @Query(()=>CreateUserResponse)
-  getUser(){
-    return userService.getUser()
+  @Query(() => CreateUserResponse)
+  getUser() {
+    return userService.getUser();
   }
 
-  @Mutation(()=>LoginResponse)
-  loginUser(@Arg("input",()=> LoginUser) input: LoginUser){
-    return userService.loginUser(input)
+  @Query(() => CreateUserResponse)
+  getReceptionist() {
+    return userService.getReceptionist();
+  }
+
+  @Query(() => CreateUserResponse)
+  getPharmacist() {
+    return userService.getPharmacist();
+  }
+
+  @Mutation(() => LoginResponse)
+  loginUser(@Arg("input", () => LoginUser) input: LoginUser) {
+    return userService.loginUser(input);
   }
 }
-

@@ -1,7 +1,7 @@
 import type CreateUserArguments from "../Arguments/User/CreateUser.js";
 import type LoginUser from "../Arguments/User/LoginUser.js";
 import { database } from "../database.js";
-import Users from "../models/Users.js";
+import Users, { Role } from "../models/Users.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
@@ -15,6 +15,7 @@ export default class UserService {
     address,
     phone,
     password,
+    role,
   }: CreateUserArguments) {
     try {
       const userEmail = await this.userRepo.findOneBy({ email: email });
@@ -35,6 +36,7 @@ export default class UserService {
         address,
         phone,
         password: hashPassword,
+        role,
       });
       await this.userRepo.save(user);
 
@@ -53,7 +55,7 @@ export default class UserService {
 
   async getUser() {
     try {
-      const users = this.userRepo.find();
+      const users = await this.userRepo.find();
 
       return {
         success: true,
@@ -65,6 +67,45 @@ export default class UserService {
       return {
         success: false,
         message: "Error while getting the user",
+      };
+    }
+  }
+
+  async getReceptionist() {
+    try {
+      const users = await this.userRepo.find({
+        where: { role: Role.receptionists },
+      });
+
+      return {
+        success: true,
+        message: "All Receptionist",
+        users,
+      };
+    } catch (error) {
+      console.log(error);
+      return {
+        success: false,
+        message: "Error while getting the Receptionist",
+      };
+    }
+  }
+  async getPharmacist() {
+    try {
+      const users = await this.userRepo.find({
+        where: { role: Role.pharmacists },
+      });
+
+      return {
+        success: true,
+        message: "All Pharmacist",
+        users,
+      };
+    } catch (error) {
+      console.log(error);
+      return {
+        success: false,
+        message: "Error while getting the Pharmacist",
       };
     }
   }
@@ -99,7 +140,7 @@ export default class UserService {
         accesstoken,
       };
     } catch (error) {
-        console.log(error)
+      console.log(error);
       return {
         success: false,
         message: "Error while loging in",

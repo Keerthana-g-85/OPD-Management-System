@@ -6,12 +6,14 @@ import { ApolloServer } from "@apollo/server";
 import { buildSchema } from "type-graphql";
 import { expressMiddleware } from "@as-integrations/express4";
 import UserResolver from "./Resolver/UserResolver.js";
+import DoctorResolver from "./Resolver/DoctorResolver.js";
+import DepartmentResolver from "./Resolver/DepartmentResolver.js";
 
 dotenv.config();
 
 const app = express();
 app.use(cors({origin:"http://localhost:5173"}))
-const schema = await buildSchema({resolvers :[UserResolver]})
+const schema = await buildSchema({resolvers :[UserResolver , DoctorResolver , DepartmentResolver]})
 const server = new ApolloServer({schema})
 server.start()
 

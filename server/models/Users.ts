@@ -1,4 +1,4 @@
-import { Field, ID, Int, ObjectType } from "type-graphql";
+import { Field, ID, Int, ObjectType, registerEnumType } from "type-graphql";
 import {
   Entity,
   Column,
@@ -14,6 +14,8 @@ export enum Role {
   receptionists = "receptionists",
   pharmacists = "pharmacists",
 }
+
+registerEnumType(Role, { name: "Role" });
 @ObjectType()
 @Entity()
 export default class Users {
@@ -45,13 +47,17 @@ export default class Users {
   @Column({ type: "varchar" })
   address!: string;
 
-  @Field(() => Int)
-  @Column({ type: "int" })
-  phone!: number;
+  @Field(() => String)
+  @Column({ type: "varchar" })
+  phone!: string;
 
-  @Field(()=>Role)
-  @Column({type : "enum", enum : Role})
+  @Field(() => Role)
+  @Column({ type: "enum", enum: Role })
   role!: Role;
+
+  @Field(()=>String)
+  @Column({type : "varchar" , default:null})
+  image! : string;
 
   @Field(() => Date)
   @CreateDateColumn()
