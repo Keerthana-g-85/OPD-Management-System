@@ -1,38 +1,41 @@
-import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
-
+import useApi from "./Api";
 import { Button, Card, CardMedia, Typography } from "@mui/material";
 import Grid from "@mui/material/Grid";
 import { useNavigate } from "react-router";
 import type { Users } from "../Types";
 export default function Pharmacist() {
   const navigate = useNavigate();
+  const Api = useApi();
   async function getPharmacist() {
     try {
-      const response = await axios.post("http://localhost:3040/graphql", {
-        query: `query Query {
-  getPharmacist {
-    success
-    message
-    users {
-      id
-      name
-      email
-      password
-      age
-      gender
-      address
-      phone
-      role
-      image
+      const response = await Api({
+        query: `query GetUser {
+  getUser(role: pharmacists) {
+        success
+        message
+        users {
+            id
+            name
+            email
+            password
+            age
+            gender
+            address
+            phone
+            role
+            image
+            createdAt
+            updatedAt
+        }
     }
-  }
 }
+
   `,
       });
       console.log(response);
-      console.log(response.data.data.getPharmacist.users);
-      const data = response.data.data.getPharmacist.users;
+      console.log(response.data.data.getUser.users);
+      const data = response.data.data.getUser.users;
       console.log(data);
 
       return data;
@@ -53,7 +56,7 @@ export default function Pharmacist() {
       >
         ADD PHARMACIST
       </Button>
-      {parmacist?.map((data : Users) => {
+      {parmacist?.map((data: Users) => {
         return (
           <div key={data.id}>
             <Card sx={{ p: 2, mb: 2 }}>

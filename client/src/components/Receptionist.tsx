@@ -1,40 +1,40 @@
-import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
-
+import useApi from "./Api";
 import { Button, Card, CardMedia, Typography } from "@mui/material";
 import Grid from "@mui/material/Grid";
 import type { Users } from "../Types";
 import { useNavigate } from "react-router";
 export default function Receptionist() {
   const navigate = useNavigate();
+  const Api = useApi();
   async function getReceptionists() {
     try {
-      const response = await axios.post("http://localhost:3040/graphql", {
-        query: `query Query {
-  getReceptionist {
-    success
-    message
-    users {
-      id
-      name
-      email
-      password
-      age
-      gender
-      address
-      phone
-      role
-      image
-      createdAt
-      updatedAt
+      const response = await Api({
+        query: `query GetUser {
+  getUser(role: receptionists) {
+        success
+        message
+        users {
+            id
+            name
+            email
+            password
+            age
+            gender
+            address
+            phone
+            role
+            image
+            createdAt
+            updatedAt
+        }
     }
-  }
 }
   `,
       });
       console.log(response);
-      console.log(response.data.data.getReceptionist.users);
-      const data = response.data.data.getReceptionist.users;
+      console.log(response.data.data.getUser.users);
+      const data = response.data.data.getUser.users;
       console.log(data);
 
       return data;
@@ -55,7 +55,7 @@ export default function Receptionist() {
       >
         ADD PHARMACIST
       </Button>
-      {receptionists?.map((data : Users) => {
+      {receptionists?.map((data: Users) => {
         return (
           <div key={data.id}>
             <Card sx={{ p: 2, mb: 2 }}>

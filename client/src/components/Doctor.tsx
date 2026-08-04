@@ -1,16 +1,16 @@
-import axios from "axios";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { Box, Button, Card, CardMedia, Typography } from "@mui/material";
 import Grid from "@mui/material/Grid";
 import { useNavigate } from "react-router";
 import type { Doctors } from "../Types";
+import useApi from "./Api"
 export default function Doctors() {
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
+  // const queryClient = useQueryClient();
+  const Api = useApi()
   async function handleDoctors() {
     try {
-      const response = await axios.post("http://localhost:3040/graphql", {
-        query: `query GetDoctor {
+      const response = await Api({query :`query GetDoctor {
                     getDoctor {
                         success
                         message
@@ -38,8 +38,7 @@ export default function Doctors() {
                         }
                     }
                     }
-  `,
-      });
+  `})
       console.log(response);
       console.log(response.data.data.getDoctor.doctors);
       const data = response.data.data.getDoctor.doctors;
