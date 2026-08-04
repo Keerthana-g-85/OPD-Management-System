@@ -1,4 +1,5 @@
 import type CreateDoctorArguments from "../Arguments/Doctor/CreateDoctor.js";
+import type UpdateDoctorArguments from "../Arguments/Doctor/UpdateDoctor.js";
 import { database } from "../database.js";
 import Department from "../models/Department.js";
 import Doctor from "../models/Doctor.js";
@@ -7,17 +8,17 @@ import bcrypt from "bcrypt";
 
 export default class DoctorService {
   private doctorRepo = database.getRepository(Doctor);
+  private usersRepo = database.getRepository(Users);
 
   async getDoctor() {
     try {
       const doctors = await this.doctorRepo.find({
-        relations: { users: true , department: true,},
+        relations: { users: true, department: true },
       });
       return {
         success: true,
         message: "Doctors successfully fetched",
         doctors,
-       
       };
     } catch (error) {
       console.log(error);
@@ -42,24 +43,27 @@ export default class DoctorService {
     qualification,
     experience,
     charges,
+    status 
   }: CreateDoctorArguments) {
     try {
-      console.log(name,
-    email,
-    age,
-    gender,
-    address,
-    phone,
-    password,
-    role,
-    image,
-    department,
-    qualification,
-    experience,
-    charges,)
-      const usersRepo = database.getRepository(Users);
+      console.log(
+        name,
+        email,
+        age,
+        gender,
+        address,
+        phone,
+        password,
+        role,
+        image,
+        department,
+        qualification,
+        experience,
+        charges,
+      );
+
       const depeartmentRepo = database.getRepository(Department);
-      const userEmail = await usersRepo.findOneBy({ email: email });
+      const userEmail = await this.usersRepo.findOneBy({ email: email });
       if (userEmail) {
         return {
           success: false,
@@ -68,7 +72,7 @@ export default class DoctorService {
       }
       const salt = bcrypt.genSaltSync(10);
       const hashPassword = await bcrypt.hash(password, salt);
-      const user = usersRepo.create({
+      const user = this.usersRepo.create({
         name,
         email,
         age,
@@ -80,7 +84,7 @@ export default class DoctorService {
         image,
       });
 
-      const userId = await usersRepo.save(user);
+      const userId = await this.usersRepo.save(user);
       const departmentId = await depeartmentRepo.findOneBy({ id: department });
       if (!departmentId) {
         return {
@@ -95,23 +99,76 @@ export default class DoctorService {
           qualification,
           experience,
           charges,
+          status
         });
 
         await this.doctorRepo.save(doctors);
       }
-
-      
-
       return {
         success: true,
         message: "Doctor successfully added",
       };
     } catch (error) {
-      console.log(error)
+      console.log(error);
       return {
         success: false,
         message: "Error while creating the doctors",
       };
     }
   }
+
+  async updateDoctor(input: UpdateDoctorArguments) {
+    try {
+      const user = await this.usersRepo.findOneBy({ id: input.id });
+      if (!user) {
+        return {
+          success: false,
+          message: "Doctor not present doctors",
+        };
+      }
+      const userInput = {
+        name: input.name || user.name,
+        age: input.age || user.age,
+        email: input.email || user.email,
+        gender: input.gender || user.gender,
+        address: input.address || user.address,
+        phone: input.phone || user.phone,
+        image: input.image || user.image,
+      };
+      const userData: Users = {
+        ...user,
+        ...userInput,
+      };
+      if (userData) {
+        await this.usersRepo.update({ id: input.id }, { ...userData });
+      }
+      const doctor = await this.doctorRepo.findOne({
+        where: { users: { id: user.id } },
+      });
+      console.log(doctor)
+      if (doctor) {
+        const doctorInput = {
+          qualification: input.qualification || doctor.qualification,
+          experience: input.experience || doctor.experience,
+          charges: input.charges || doctor.charges,
+        };
+
+        await this.doctorRepo.update({ id: doctor.id }, doctorInput );
+      } else {
+        console.log("No doctor");
+      }
+      return {
+        success: true,
+        message: "Doctor updated",
+      };
+    } catch (error) {
+      console.log(error);
+      return {
+        success: false,
+        message: "Error while updating the doctors",
+      };
+    }
+  }
+
+
 }

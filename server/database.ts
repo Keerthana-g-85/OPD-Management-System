@@ -1,9 +1,14 @@
 import { DataSource, type DataSourceOptions } from "typeorm";
-
 import dotenv from "dotenv";
 import Users from "./models/Users.js";
 import Doctor from "./models/Doctor.js";
 import Department from "./models/Department.js";
+import Appoitment from "./models/Appoitment.js";
+import Consultation from "./models/Consultation.js";
+import Medicine from "./models/Medicine.js";
+import Pharmacist from "./models/Pharmacist.js";
+import Prescription from "./models/Prescription.js";
+import Patient from "./models/Patient.js";
 
 dotenv.config();
 
@@ -14,8 +19,8 @@ export const database = new DataSource({
   database: process.env.DB_NAME as string,
   password: process.env.DB_PASSWORD as string,
   port: Number(process.env.DB_PORT),
-  synchronize: true,
-  entities: [Users , Doctor , Department],
+  synchronize: false,
+  entities: [Users , Doctor , Department , Appoitment , Consultation , Medicine , Pharmacist , Prescription , Patient],
   migrations: ["./migrations/*.ts"],
 });
 

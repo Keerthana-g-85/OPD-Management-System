@@ -39,4 +39,8 @@ export default class Doctor {
   @Field(() => Int)
   @Column({ type: "int" })
   charges!: number;
+
+  @Field(()=>Boolean)
+  @Column({ type : "boolean" , default: true})
+  status! : boolean
 }

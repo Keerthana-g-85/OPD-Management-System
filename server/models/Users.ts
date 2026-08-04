@@ -4,8 +4,9 @@ import {
   Column,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
+  CreateDateColumn 
 } from "typeorm";
-import { CreateDateColumn } from "typeorm";
+
 
 export enum Role {
   patient = "patient",

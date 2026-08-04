@@ -3,14 +3,15 @@ import { Box, Button, Card, CardMedia, Typography } from "@mui/material";
 import Grid from "@mui/material/Grid";
 import { useNavigate } from "react-router";
 import type { Doctors } from "../Types";
-import useApi from "./Api"
+import useApi from "./Api";
 export default function Doctors() {
   const navigate = useNavigate();
   // const queryClient = useQueryClient();
-  const Api = useApi()
+
   async function handleDoctors() {
     try {
-      const response = await Api({query :`query GetDoctor {
+      const response = await useApi({
+        query: `query GetDoctor {
                     getDoctor {
                         success
                         message
@@ -38,7 +39,8 @@ export default function Doctors() {
                         }
                     }
                     }
-  `})
+  `,
+      });
       console.log(response);
       console.log(response.data.data.getDoctor.doctors);
       const data = response.data.data.getDoctor.doctors;
@@ -56,9 +58,15 @@ export default function Doctors() {
   return (
     <>
       <Box>
-        <Button onClick={()=>{navigate('/add_doctor')}}>ADD DOCTOR</Button>
+        <Button
+          onClick={() => {
+            navigate("/add_doctor");
+          }}
+        >
+          ADD DOCTOR
+        </Button>
       </Box>
-      {doctor?.map((data : Doctors) => {
+      {doctor?.map((data: Doctors) => {
         return (
           <div key={data.id}>
             <Card sx={{ p: 2, mb: 2 }}>

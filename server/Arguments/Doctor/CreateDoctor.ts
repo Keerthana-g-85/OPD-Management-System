@@ -41,4 +41,7 @@ export default class CreateDoctorArguments {
 
   @Field(() => Int)
   charges!: number;
+
+  @Field(()=>Boolean)
+  status! : boolean
 }

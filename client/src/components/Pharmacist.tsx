@@ -6,10 +6,9 @@ import { useNavigate } from "react-router";
 import type { Users } from "../Types";
 export default function Pharmacist() {
   const navigate = useNavigate();
-  const Api = useApi();
   async function getPharmacist() {
     try {
-      const response = await Api({
+      const response = await useApi({
         query: `query GetUser {
   getUser(role: pharmacists) {
         success

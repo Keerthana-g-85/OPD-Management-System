@@ -30,7 +30,7 @@ export default function AddDoctor() {
         input: {
             name: "${doctor.name}"
             email: "${doctor.email}"
-            password: ""
+            password: "123456"
             age: ${doctor.age}
             gender: "${doctor.gender}"
             address: "${doctor.address}"
@@ -41,6 +41,7 @@ export default function AddDoctor() {
             qualification: "${doctor.qualification}"
             experience: ${doctor.experience}
             charges: ${doctor.charges}
+            status: true
         }
     ) {
         success

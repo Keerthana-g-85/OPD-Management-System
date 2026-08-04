@@ -6,10 +6,9 @@ import type { Users } from "../Types";
 import { useNavigate } from "react-router";
 export default function Receptionist() {
   const navigate = useNavigate();
-  const Api = useApi();
   async function getReceptionists() {
     try {
-      const response = await Api({
+      const response = await useApi({
         query: `query GetUser {
   getUser(role: receptionists) {
         success
