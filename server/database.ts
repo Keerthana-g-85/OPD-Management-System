@@ -7,6 +7,7 @@ import Appoitment from "./models/Appointment.js";
 import Consultation from "./models/Consultation.js";
 import Medicine from "./models/Medicine.js";
 import Pharmacist from "./models/Pharmacist.js";
+import PrescripMedicine from "./models/PrescripMedicine.js";
 import Prescription from "./models/Prescription.js";
 import Patient from "./models/Patient.js";
 import Slot from "./models/Slot.js";
@@ -21,7 +22,7 @@ export const database = new DataSource({
   password: process.env.DB_PASSWORD as string,
   port: Number(process.env.DB_PORT),
   synchronize: false,
-  entities: [Users , Doctor , Department , Appoitment , Consultation , Medicine , Pharmacist , Prescription,Patient ,Slot],
+  entities: [Users , Doctor , Department , Appoitment , Consultation , Medicine , Pharmacist , Prescription,Patient ,Slot , PrescripMedicine],
   migrations: ["./migrations/*.ts"],
 });
 

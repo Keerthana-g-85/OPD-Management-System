@@ -5,8 +5,12 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  ManyToOne,
+  OneToMany,
 } from "typeorm";
 import Medicine from "./Medicine.js";
+import Consultation from "./Consultation.js";
+import PrescripMedicine from "./PrescripMedicine.js";
 
 @ObjectType()
 @Entity()
@@ -15,8 +19,13 @@ export default class Prescription {
   @PrimaryGeneratedColumn("uuid")
   id!: string;
 
-  @Field(() => Medicine)
-  medicine!: Medicine;
+  @Field(() => Consultation)
+  @ManyToOne(() => Consultation)
+  consultation!: Consultation;
+
+  @Field(()=>String)
+  @Column({ type: "varchar" })
+  name! : string
 
   @Field(() => String)
   @Column({ type: "varchar" })

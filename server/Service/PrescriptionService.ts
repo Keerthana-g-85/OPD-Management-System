@@ -1,0 +1,47 @@
+import type CreatePrescriptionArguments from "../Arguments/Prescription/CreatePrescriptionArguments.js";
+import { database } from "../database.js";
+import Consultation from "../models/Consultation.js";
+import Prescription from "../models/Prescription.js";
+
+export default class PrescriptionService {
+  private prescriptionRepo = database.getRepository(Prescription);
+  private consultationRepo = database.getRepository(Consultation);
+  async addPrescription({
+    consultation_id,
+    frequency,
+    dosage,
+    duration,
+    name
+  }: CreatePrescriptionArguments) {
+    try {
+      const consultation = await this.consultationRepo.findOneBy({
+        id: consultation_id,
+      });
+      if (!consultation) {
+        return {
+          success: false,
+          message: "Consultation not present ",
+        };
+      }
+      const prescription = this.prescriptionRepo.create({
+        consultation: { id: consultation_id },
+        frequency,
+        dosage,
+        duration,
+        name
+      });
+
+      await this.prescriptionRepo.save(prescription);
+      return{
+        success : true ,
+        message : "Prescription added"
+      }
+    } catch (error) {
+      console.log(error);
+      return {
+        success: false,
+        message: "Error while creating prescription",
+      };
+    }
+  }
+}
