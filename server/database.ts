@@ -20,7 +20,7 @@ export const database = new DataSource({
   password: process.env.DB_PASSWORD as string,
   port: Number(process.env.DB_PORT),
   synchronize: false,
-  entities: [Users , Doctor , Department , Appoitment , Consultation , Medicine , Pharmacist , Prescription , Patient],
+  entities: [Users , Doctor , Department , Appoitment , Consultation , Medicine , Pharmacist , Prescription,Patient ],
   migrations: ["./migrations/*.ts"],
 });
 

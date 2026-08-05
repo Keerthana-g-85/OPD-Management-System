@@ -115,6 +115,18 @@ export default function Home() {
       icon: <AddBoxIcon />,
       path: "/pharmacist",
     },
+    {
+      text: "Patient",
+      icon: <AddBoxIcon />,
+      path: "/patients",
+
+    },
+    {
+      text: "Book Appointment",
+      icon: <AddBoxIcon />,
+      path: "/bookappoitment",
+
+    }
   ];
 
   return (

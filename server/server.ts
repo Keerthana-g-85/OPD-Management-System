@@ -8,12 +8,13 @@ import { expressMiddleware } from "@as-integrations/express4";
 import UserResolver from "./Resolver/UserResolver.js";
 import DoctorResolver from "./Resolver/DoctorResolver.js";
 import DepartmentResolver from "./Resolver/DepartmentResolver.js";
+import PatientResolver from "./Resolver/PatientResolver.js";
 
 dotenv.config();
 
 const app = express();
 app.use(cors({origin:"http://localhost:5173"}))
-const schema = await buildSchema({resolvers :[UserResolver , DoctorResolver , DepartmentResolver]})
+const schema = await buildSchema({resolvers :[UserResolver , DoctorResolver , DepartmentResolver , PatientResolver]})
 const server = new ApolloServer({schema})
 server.start()
 

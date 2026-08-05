@@ -1,16 +1,24 @@
-import { ObjectType, Field, Int, ID } from "type-graphql";
+import { ObjectType, Field, Int, ID , registerEnumType} from "type-graphql";
 import {
   Column,
   Entity,
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
-  CreateDateColumn ,
-  UpdateDateColumn
+  CreateDateColumn,
+  UpdateDateColumn,
 } from "typeorm";
-import Users from "./Users.js";
 import Doctor from "./Doctor.js";
+import Patient from "./Patient.js";
 
+export enum APStatus {
+  booked = "Booked",
+  checked_in = "Checked In",
+  prescription_generated = "Prescription Generated",
+  medicines_dispensed = "Medicines Dispensed",
+  cancelled = "Cancelled",
+}
+registerEnumType(APStatus, { name: "AppointmentStatus" });
 @ObjectType()
 @Entity()
 export default class Appoitment {
@@ -26,15 +34,20 @@ export default class Appoitment {
   @Column({ type: "varchar" })
   slot!: string;
 
-  @Field(() => Users)
-  @ManyToOne(() => Users)
+  @Field(() => Patient)
+  @ManyToOne(() => Patient)
   @JoinColumn({ name: "user_id" })
-  users!: Users;
+  patient!: Patient;
 
   @Field(() => Doctor)
   @ManyToOne(() => Doctor)
   @JoinColumn({ name: "doctor_id" })
   doctor!: Doctor;
+
+  @Field(()=>APStatus)
+  @Column({ type : "enum" , enum : APStatus})
+  status! : APStatus
+
 
   @Field(() => Date)
   @CreateDateColumn()

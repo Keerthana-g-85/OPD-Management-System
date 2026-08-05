@@ -151,8 +151,9 @@ export default class DoctorService {
           qualification: input.qualification || doctor.qualification,
           experience: input.experience || doctor.experience,
           charges: input.charges || doctor.charges,
+          status : input.status ?? doctor.status
         };
-
+        console.log(input.status)
         await this.doctorRepo.update({ id: doctor.id }, doctorInput );
       } else {
         console.log("No doctor");

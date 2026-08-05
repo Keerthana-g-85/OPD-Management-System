@@ -8,6 +8,9 @@ import Receptionist from "./components/Receptionist";
 import Pharmacist from "./components/Pharmacist";
 import AddParmacist from "./components/AddParmacist";
 import AddReceptionist from "./components/AddReceptionist";
+import Patient from "./components/Patient";
+import AddPatient from "./components/AddPatient";
+import BookAppointment from "./components/Appointment";
 
 export default function App() {
   return (
@@ -21,8 +24,11 @@ export default function App() {
             <Route path="/doctors" element={<Doctors />} />
             <Route path="/receptionist" element={<Receptionist />} />
             <Route path="/pharmacist" element={<Pharmacist />} />
-            <Route path="/add_pharmacist" element={<AddParmacist/>} />
-            <Route path="/add_receptionist" element={<AddReceptionist/>} />
+            <Route path="/add_pharmacist" element={<AddParmacist />} />
+            <Route path="/add_receptionist" element={<AddReceptionist />} />
+            <Route path="/patients" element={<Patient />} />
+            <Route path="/add_patient" element={<AddPatient />} />
+            <Route path="/bookappoitment" element={<BookAppointment />} />
           </Route>
         </Routes>
       </BrowserRouter>

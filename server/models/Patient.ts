@@ -8,7 +8,6 @@ import {
 } from "typeorm";
 import Users from "./Users.js";
 
-
 @ObjectType()
 @Entity()
 export default class Patient {
@@ -29,15 +28,15 @@ export default class Patient {
   @Column({ type: "varchar" })
   weight!: string;
 
-  @Field(() => Boolean)
-  @Column({ type: "boolean" })
-  marital_status!: boolean;
+  @Field(() => String)
+  @Column({ type: "varchar" })
+  marital_status!: string;
 
   @Field(() => String)
   @Column({ type: "varchar" })
   occupation!: string;
 
-  @Field(() => Boolean)
-  @Column({ type: "boolean" })
-  allergies!: boolean;
+  @Field(() => String)
+  @Column({ type: "varchar" })
+  allergies!: string;
 }

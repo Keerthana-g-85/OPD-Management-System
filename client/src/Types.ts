@@ -20,3 +20,13 @@ export interface Doctors {
   experience: string;
   charges: string;
 }
+
+export interface Patient {
+  id: string;
+  users: Users;
+  height: string;
+  weight: string;
+  occupation: string;
+  allergies: string;
+  marital_status: string;
+}

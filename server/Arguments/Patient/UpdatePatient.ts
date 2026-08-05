@@ -1,11 +1,11 @@
-import { Field, ID, InputType, Int } from "type-graphql";
+import { InputType, Field, Int, ID } from "type-graphql";
 import { Role } from "../../models/Users.js";
 
 @InputType()
-export default class UpdateDoctorArguments {
+export default class UpdatepatientArguments {
   @Field(() => ID)
   id!: string;
-  
+
   @Field(() => String, { nullable: true })
   name?: string;
 
@@ -33,18 +33,18 @@ export default class UpdateDoctorArguments {
   @Field(() => String, { nullable: true })
   image?: string;
 
-  @Field(() => ID, { nullable: true })
-  department?: string;
+  @Field(() => String, { nullable: true })
+  height?: string;
 
   @Field(() => String, { nullable: true })
-  qualification?: string;
+  weight?: string;
 
-  @Field(() => Int, { nullable: true })
-  experience?: number;
+  @Field(() => String, { nullable: true })
+  marital_status?: string;
 
-  @Field(() => Int, { nullable: true })
-  charges?: number;
+  @Field(() => String, { nullable: true })
+  occupation?: string;
 
-  @Field(() => Boolean, { nullable: true })
-  status?: boolean;
+  @Field(() => String, { nullable: true })
+  allergies?: string;
 }
