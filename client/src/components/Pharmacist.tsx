@@ -3,29 +3,35 @@ import useApi from "./Api";
 import { Button, Card, CardMedia, Typography } from "@mui/material";
 import Grid from "@mui/material/Grid";
 import { useNavigate } from "react-router";
-import type { Users } from "../Types";
+import type { Pharmacist, Users } from "../Types";
 export default function Pharmacist() {
   const navigate = useNavigate();
   async function getPharmacist() {
     try {
       const response = await useApi({
-        query: `query GetUser {
-  getUser(role: pharmacists) {
+        query: `query GetPharmacist {
+    getPharmacist {
         success
         message
-        users {
+        pharmacists {
             id
-            name
-            email
-            password
-            age
-            gender
-            address
-            phone
-            role
-            image
-            createdAt
-            updatedAt
+            qualification
+            experience
+            status
+            users {
+                id
+                name
+                email
+                password
+                age
+                gender
+                address
+                phone
+                role
+                image
+                createdAt
+                updatedAt
+            }
         }
     }
 }
@@ -33,8 +39,8 @@ export default function Pharmacist() {
   `,
       });
       console.log(response);
-      console.log(response.data.data.getUser.users);
-      const data = response.data.data.getUser.users;
+      console.log(response.data.data.getPharmacist.pharmacists);
+      const data = response.data.data.getPharmacist.pharmacists;
       console.log(data);
 
       return data;
@@ -55,7 +61,7 @@ export default function Pharmacist() {
       >
         ADD PHARMACIST
       </Button>
-      {parmacist?.map((data: Users) => {
+      {parmacist?.map((data: Pharmacist) => {
         return (
           <div key={data.id}>
             <Card sx={{ p: 2, mb: 2 }}>
@@ -67,7 +73,7 @@ export default function Pharmacist() {
                     height="200px"
                     width="200px"
                     sx={{ p: 1, borderRadius: 5, objectFit: "cover" }}
-                    image={data.image}
+                    image={data.users.image}
                   />
                 </Grid>
 
@@ -80,14 +86,16 @@ export default function Pharmacist() {
                       color: "#325E6A",
                     }}
                   >
-                    {data.name}
+                    {data.users.name}
                   </Typography>
                   <hr />
-                  <Typography>Email : {data.email}</Typography>
-                  <Typography>Age : {data.age}</Typography>
-                  <Typography>Gender : {data.gender}</Typography>
-                  <Typography>Phone : {data.phone}</Typography>
-                  <Typography>Location : {data.address}</Typography>
+                  <Typography>Email : {data.users.email}</Typography>
+                  <Typography>Age : {data.users.age}</Typography>
+                  <Typography>Gender : {data.users.gender}</Typography>
+                  <Typography>Phone : {data.users.phone}</Typography>
+                  <Typography>Location : {data.users.address}</Typography>
+                  <Typography>Experience : {data.experience}</Typography>
+                  <Typography>Qualification : {data.qualification}</Typography>
                 </Grid>
               </Grid>
             </Card>

@@ -20,9 +20,41 @@ export default function AddDoctor() {
     charges: "",
     image: "",
   });
+  const [error, setError] = useState({
+    errname: false,
+    erremail: false,
+    errphone: false,
+    errage: false,
+    errgender: false,
+    erraddress: false,
+    errdepartment: false,
+    errqualification: false,
+    errexperience: false,
+    errcharges: false,
+    errimage: false,
+  });
+  const [errmessage, setErrmessage] = useState({
+    errname: "",
+    erremail: "",
+    errphone: "",
+    errage: "",
+    errgender: "",
+    erraddress: "",
+    errdepartment: "",
+    errqualification: "",
+    errexperience: "",
+    errcharges: "",
+    errimage: "",
+  });
   const navigate = useNavigate();
+
   async function handleAddDoctor() {
     try {
+      if (!doctor.name) {
+        setError((prev) => ({ ...prev, errname: true }));
+        setErrmessage((prev)=> ({...prev , errname:"Name is required"}));
+      }
+      else{
       const response = await axios.post("http://localhost:3040/graphql", {
         query: `
     mutation {
@@ -51,6 +83,7 @@ export default function AddDoctor() {
   `,
       });
       console.log(response);
+    }
     } catch (error) {
       console.log(error);
     }
@@ -69,10 +102,14 @@ export default function AddDoctor() {
           <Typography>Name</Typography>
           <TextField
             required
-            id="outlined-required"
+            id={error.errname ? "outlined-error" : "outlined-required"}
             value={doctor.name}
+            error ={error.errname}
+            helperText={errmessage.errname}
             onChange={(e) => {
               setDoctor({ ...doctor, name: e.target.value });
+              setError((prev)=> ({...prev , errname: false}));
+              setErrmessage((prev)=> ({...prev , errname:""}))
             }}
           />
 
@@ -102,7 +139,7 @@ export default function AddDoctor() {
             id="outlined-required"
             value={doctor.age}
             onChange={(e) => {
-              setDoctor({ ...doctor, age: e.target.value});
+              setDoctor({ ...doctor, age: e.target.value });
             }}
           />
 

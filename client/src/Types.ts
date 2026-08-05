@@ -1,3 +1,5 @@
+import Pharmacist from "./components/Pharmacist";
+
 export interface Users {
   id: string;
   name: string;
@@ -29,4 +31,11 @@ export interface Patient {
   occupation: string;
   allergies: string;
   marital_status: string;
+}
+
+export interface Pharmacist{
+  id : string ;
+  users: Users;
+  qualification: string;
+  experience: string;
 }
