@@ -1,36 +1,29 @@
 import { Field, ID, ObjectType } from "type-graphql";
 import {
   Column,
-  Entity,
-  PrimaryGeneratedColumn,
-  OneToOne,
-  UpdateDateColumn,
   CreateDateColumn,
+  Entity,
+  JoinColumn,
+  OneToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from "typeorm";
 import Appoitment from "./Appointment.js";
 
 @ObjectType()
 @Entity()
-export default class Consultation {
+export default class Slot {
   @Field(() => ID)
   @PrimaryGeneratedColumn("uuid")
   id!: string;
 
-  @Field(() => Appoitment)
-  @OneToOne(() => Appoitment)
-  appoitment!: Appoitment;
-
   @Field(() => String)
   @Column({ type: "varchar" })
-  notes!: string;
-
-  @Field(() => String)
-  @Column({ type: "varchar" })
-  follow_up!: string;
+  slot!: string;
 
   @Field(() => Boolean)
   @Column({ type: "boolean" })
-  status!: boolean;
+  status!: Boolean;
 
   @Field(() => Date)
   @CreateDateColumn()

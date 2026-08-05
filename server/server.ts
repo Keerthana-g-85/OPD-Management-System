@@ -9,12 +9,14 @@ import UserResolver from "./Resolver/UserResolver.js";
 import DoctorResolver from "./Resolver/DoctorResolver.js";
 import DepartmentResolver from "./Resolver/DepartmentResolver.js";
 import PatientResolver from "./Resolver/PatientResolver.js";
+import PharmacistResolver from "./Resolver/PharmacistResolver.js";
+import AppointmentResolver from "./Resolver/AppointmentResolver.js";
 
 dotenv.config();
 
 const app = express();
 app.use(cors({origin:"http://localhost:5173"}))
-const schema = await buildSchema({resolvers :[UserResolver , DoctorResolver , DepartmentResolver , PatientResolver]})
+const schema = await buildSchema({resolvers :[UserResolver , DoctorResolver , DepartmentResolver , PatientResolver ,PharmacistResolver ,AppointmentResolver]})
 const server = new ApolloServer({schema})
 server.start()
 

@@ -7,9 +7,11 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToOne,
 } from "typeorm";
 import Doctor from "./Doctor.js";
 import Patient from "./Patient.js";
+import Slot from "./Slot.js";
 
 export enum APStatus {
   booked = "Booked",
@@ -21,18 +23,19 @@ export enum APStatus {
 registerEnumType(APStatus, { name: "AppointmentStatus" });
 @ObjectType()
 @Entity()
-export default class Appoitment {
+export default class Appointment {
   @Field(() => ID)
   @PrimaryGeneratedColumn("uuid")
   id!: string;
 
   @Field(() => Date)
   @Column({ type: "date" })
-  appoitment_date!: Date;
+  appointment_date!: Date;
 
-  @Field(() => String)
-  @Column({ type: "varchar" })
-  slot!: string;
+  @Field(()=>Slot)
+  @OneToOne(()=>Slot)
+  @JoinColumn({name : "slot_id"})
+  slot!:Slot;
 
   @Field(() => Patient)
   @ManyToOne(() => Patient)
