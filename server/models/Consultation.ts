@@ -6,6 +6,7 @@ import {
   OneToOne,
   UpdateDateColumn,
   CreateDateColumn,
+  JoinColumn,
 } from "typeorm";
 import Appoitment from "./Appointment.js";
 
@@ -18,6 +19,7 @@ export default class Consultation {
 
   @Field(() => Appoitment)
   @OneToOne(() => Appoitment)
+  @JoinColumn({name : "appointment_id"})
   appoitment!: Appoitment;
 
   @Field(() => String)
