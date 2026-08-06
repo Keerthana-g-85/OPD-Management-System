@@ -5,19 +5,22 @@ import TextField from "@mui/material/TextField";
 import { useState } from "react";
 import useApi from "./Api";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import Grid from "@mui/material/Grid";
-export default function AddParmacist() {
+export default function EditParmacist() {
+  const location = useLocation();
+  const data = location?.state?.data;
+  console.log(data);
   const [parmacist, setParmacist] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    age: "",
-    gender: "",
-    address: "",
-    image: "",
-    qualification: "",
-    experience: "",
+    name: data.users.name,
+    email: data.users.email,
+    phone: data.users.phone,
+    age: data.users.age,
+    gender: data.users.gender,
+    address: data.users.address,
+    qualification: data.qualification,
+    experience: data.experience,
+    image: data.users.image,
   });
   const [error, setError] = useState({
     errname: false,
@@ -118,12 +121,13 @@ export default function AddParmacist() {
     }
   }
 
-  async function handleAddparmacist() {
+  async function handleEditparmacist() {
     const response = await useApi({
       query: `
       mutation {
-        addPharmacist(
+        editPharmacist(
           input: {
+            id:"${data.users.id}"
             name: "${parmacist.name}"
             email: "${parmacist.email}"
             password: "123456"
@@ -162,7 +166,7 @@ export default function AddParmacist() {
     return response;
   }
   const addPharmacistMutation = useMutation({
-    mutationFn: handleAddparmacist,
+    mutationFn: handleEditparmacist,
     onSuccess: async () => {
       await queryClient.invalidateQueries({
         queryKey: ["pharmacists"],
@@ -357,7 +361,7 @@ export default function AddParmacist() {
             sx={{ mt: "20px" }}
             onClick={handlePharmacist}
           >
-            Add Pharmacist
+            Edit Pharmacist
           </Button>
         </Paper>
       </Box>

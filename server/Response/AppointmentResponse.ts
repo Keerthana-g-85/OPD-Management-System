@@ -1,4 +1,6 @@
 import { Field, ObjectType } from "type-graphql";
+import Appointment from "../models/Appointment.js";
+import Slot from "../models/Slot.js";
 
 @ObjectType()
 export default class AppointmentResponse {
@@ -7,4 +9,10 @@ export default class AppointmentResponse {
 
   @Field(() => String)
   message!: string;
+
+  @Field(()=>[Appointment])
+  appointment? :Appointment[]
+
+  @Field(() => [Slot], { nullable: true })
+  slots?: Slot[];
 }

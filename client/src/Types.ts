@@ -21,6 +21,7 @@ export interface Doctors {
   qualification: string;
   experience: string;
   charges: string;
+  status: boolean;
 }
 
 export interface Patient {
@@ -33,9 +34,25 @@ export interface Patient {
   marital_status: string;
 }
 
-export interface Pharmacist{
-  id : string ;
+export interface Pharmacist {
+  id: string;
   users: Users;
   qualification: string;
   experience: string;
+}
+
+export interface Department {
+  id: string;
+  name: string;
+}
+
+export interface Slot {
+  id: string;
+  slot: string;
+}
+
+export interface PrescriptionInput {
+  index: number;
+  field: "name" | "dosage" | "frequency" | "duration";
+  value: string;
 }

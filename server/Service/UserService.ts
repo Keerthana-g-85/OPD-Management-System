@@ -1,6 +1,8 @@
+import { GraphQLError } from "graphql";
 import type CreateUserArguments from "../Arguments/User/CreateUser.js";
 import type GetUser from "../Arguments/User/GetUser.js";
 import type LoginUser from "../Arguments/User/LoginUser.js";
+import type UpdateUserArguments from "../Arguments/User/UpdateUser.js";
 import { database } from "../database.js";
 import Users, { Role } from "../models/Users.js";
 import bcrypt from "bcrypt";
@@ -17,6 +19,7 @@ export default class UserService {
     phone,
     password,
     role,
+    image,
   }: CreateUserArguments) {
     try {
       const userEmail = await this.userRepo.findOneBy({ email: email });
@@ -38,6 +41,7 @@ export default class UserService {
         phone,
         password: hashPassword,
         role,
+        image,
       });
       await this.userRepo.save(user);
 
@@ -59,8 +63,8 @@ export default class UserService {
       let users;
       if (role) {
         users = await this.userRepo.find({ where: { role: Role[role] } });
-      }else{
-      users = await this.userRepo.find();
+      } else {
+        users = await this.userRepo.find();
       }
 
       return {
@@ -86,7 +90,7 @@ export default class UserService {
           message: "Email not yet registred",
         };
       }
-      console.log(user);
+      console.log(user.role);
 
       const isPassword = await bcrypt.compare(password, user.password);
       if (!isPassword) {
@@ -97,7 +101,7 @@ export default class UserService {
       }
 
       const accesstoken = jwt.sign(
-        { id: user.id, name: user.name },
+        { id: user.id, name: user.name, role: user.role },
         process.env.JW_SECRET as string,
         { expiresIn: "2hr" },
       );
@@ -112,6 +116,36 @@ export default class UserService {
         success: false,
         message: "Error while loging in",
       };
+    }
+  }
+
+  async updateUser({
+    id,
+    name,
+    email,
+    age,
+    gender,
+    address,
+    phone,
+    image,
+  }: UpdateUserArguments) {
+    try {
+      const user = await this.userRepo.findOneBy({ id: id });
+      if (!user) {
+        throw new GraphQLError("User not present pharmacists");
+      }
+      const userInput = {
+        name: name || user.name,
+        age: age || user.age,
+        email: email || user.email,
+        gender: gender || user.gender,
+        address: address || user.address,
+        phone: phone || user.phone,
+        image: image || user.image,
+      };
+      await this.userRepo.update({ id: id }, { ...userInput });
+    } catch (error) {
+      console.log(error);
     }
   }
 }

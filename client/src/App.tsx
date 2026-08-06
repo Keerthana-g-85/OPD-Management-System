@@ -10,7 +10,13 @@ import AddParmacist from "./components/AddParmacist";
 import AddReceptionist from "./components/AddReceptionist";
 import Patient from "./components/Patient";
 import AddPatient from "./components/AddPatient";
-import BookAppointment from "./components/Appointment";
+import BookAppointment from "./components/BookAppointment";
+import AddConsultation from "./components/AddConsultation";
+import AddPrescription from "./components/AddPrescription";
+import UpdateDoctor from "./components/EditDoctor";
+import EditParmacist from "./components/EditPharmacist";
+import EditReceptionist from "./components/EditReceptionist";
+import Appointment from "./components/Appointment";
 
 export default function App() {
   return (
@@ -29,6 +35,12 @@ export default function App() {
             <Route path="/patients" element={<Patient />} />
             <Route path="/add_patient" element={<AddPatient />} />
             <Route path="/bookappoitment" element={<BookAppointment />} />
+            <Route path="/add_consultation" element={<AddConsultation />} />
+            <Route path="/add_prescription" element={<AddPrescription />} />
+            <Route path="/edit_doctor" element={<UpdateDoctor />} />
+            <Route path="/edit_pharmasist" element={<EditParmacist />} />
+            <Route path="/edit_receptionist" element={<EditReceptionist />} />
+            <Route path="/appointment" element={<Appointment />} />
           </Route>
         </Routes>
       </BrowserRouter>

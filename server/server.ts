@@ -1,6 +1,6 @@
 import express from "express";
 import dotenv from "dotenv";
-import cors from 'cors';
+import cors from "cors";
 import { connection } from "./database.js";
 import { ApolloServer } from "@apollo/server";
 import { buildSchema } from "type-graphql";
@@ -13,18 +13,66 @@ import PharmacistResolver from "./Resolver/PharmacistResolver.js";
 import AppointmentResolver from "./Resolver/AppointmentResolver.js";
 import ConsultationResolver from "./Resolver/ConsultationResolver.js";
 import PrescriptionResolver from "./Resolver/PrescriptionResolver.js";
+import SlotResolver from "./Resolver/SlotResolver.js";
+import jwt from "jsonwebtoken";
 
 dotenv.config();
 
 const app = express();
-app.use(cors({origin:"http://localhost:5173"}))
-const schema = await buildSchema({resolvers :[UserResolver , DoctorResolver , DepartmentResolver , PatientResolver ,PharmacistResolver ,AppointmentResolver ,ConsultationResolver ,PrescriptionResolver]})
-const server = new ApolloServer({schema})
-server.start()
+app.use(cors({ origin: "http://localhost:5173" }));
+const schema = await buildSchema({
+  resolvers: [
+    UserResolver,
+    DoctorResolver,
+    DepartmentResolver,
+    PatientResolver,
+    PharmacistResolver,
+    AppointmentResolver,
+    ConsultationResolver,
+    PrescriptionResolver,
+    SlotResolver,
+  ],
+  authChecker: ({ context }, roles) => {
+    if (!context.user) {
+      return false;
+    }
+    if (roles.length === 0) {
+      return true;
+    }
+    return roles.includes(context.user.role);
+  },
+});
+const server = new ApolloServer({ schema });
+server.start();
 
 app.use(express.json());
 await connection();
-app.use("/graphql",express.json(),expressMiddleware(server))
+app.use(
+  "/graphql",
+  express.json(),
+  expressMiddleware(server, {
+    context: async ({ req }) => {
+      try {
+        const token = req.headers.authorization?.split(" ")[1];
+        console.log(token);
+        if (!token) {
+          return {
+            user: null,
+          };
+        }
+        const payload = jwt.verify(token, process.env.JW_SECRET as string);
+        return {
+          user: payload,
+        };
+      } catch (error) {
+        console.log('dsfdfgtyuiopo56789', error);
+        return {
+          user: null,
+        };
+      }
+    },
+  }),
+);
 app.listen(process.env.PORT, () => {
   console.log("server started");
 });

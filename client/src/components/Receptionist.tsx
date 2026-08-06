@@ -4,8 +4,10 @@ import { Button, Card, CardMedia, Typography } from "@mui/material";
 import Grid from "@mui/material/Grid";
 import type { Users } from "../Types";
 import { useNavigate } from "react-router";
+import { useSelector } from "react-redux";
 export default function Receptionist() {
   const navigate = useNavigate();
+  const role = useSelector((state: any) => state.login.user?.role);
   async function getReceptionists() {
     try {
       const response = await useApi({
@@ -47,13 +49,15 @@ export default function Receptionist() {
   });
   return (
     <>
-      <Button
-        onClick={() => {
-          navigate("/add_receptionist");
-        }}
-      >
-        ADD PHARMACIST
-      </Button>
+      {role === "admin" ? (
+        <Button
+          onClick={() => {
+            navigate("/add_receptionist");
+          }}
+        >
+          ADD RECEPTIONIST
+        </Button>
+      ) : null}
       {receptionists?.map((data: Users) => {
         return (
           <div key={data.id}>
@@ -87,6 +91,16 @@ export default function Receptionist() {
                   <Typography>Gender : {data.gender}</Typography>
                   <Typography>Phone : {data.phone}</Typography>
                   <Typography>Location : {data.address}</Typography>
+                  {role === "admin" ? (
+                    <Button
+                      variant="contained"
+                      onClick={() => {
+                        navigate("/edit_receptionist", { state: { data } });
+                      }}
+                    >
+                      Edit
+                    </Button>
+                  ) : null}
                 </Grid>
               </Grid>
             </Card>

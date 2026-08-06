@@ -2,7 +2,7 @@ import type CreatePatientArguments from "../Arguments/Patient/CreatePatient.js";
 import { database } from "../database.js";
 import Patient from "../models/Patient.js";
 import Users from "../models/Users.js";
-import UpdatepatientArguments from "../Arguments/Patient/UpdatePatient.js"
+import UpdatepatientArguments from "../Arguments/Patient/UpdatePatient.js";
 
 export default class PatientService {
   private patientRepo = database.getRepository(Patient);
@@ -19,7 +19,7 @@ export default class PatientService {
       };
     } catch (error) {
       console.log(error);
-      return {
+      throw {
         success: false,
         message: "Error while getting patient",
       };
@@ -45,7 +45,7 @@ export default class PatientService {
     try {
       const userEmail = await this.usersRepo.findOneBy({ email: email });
       if (userEmail) {
-        return {
+        throw {
           success: false,
           message: "User already present",
         };
@@ -76,11 +76,11 @@ export default class PatientService {
       }
       return {
         success: true,
-        message: "User successfully added",
+        message: "Patient successfully added",
       };
     } catch (error) {
       console.log(error);
-      return {
+      throw {
         success: false,
         message: "Error while creating patient",
       };
@@ -124,7 +124,7 @@ export default class PatientService {
           weight: input.weight || patient.weight,
           allergies: input.allergies || patient.allergies,
         };
-        
+
         await this.patientRepo.update({ id: patient.id }, patientInput);
       } else {
         console.log("No patient");

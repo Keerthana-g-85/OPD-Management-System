@@ -2,27 +2,31 @@ import { Button, Typography } from "@mui/material";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import TextField from "@mui/material/TextField";
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import { FormControl, Select, MenuItem } from "@mui/material";
 import { useState } from "react";
 import Grid from "@mui/material/Grid";
 import useApi from "./Api";
-import type { Department} from "../Types";
+import type { Department } from "../Types";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useSelector } from "react-redux";
 
-export default function AddDoctor() {
+export default function UpdateDoctor() {
+  const location = useLocation();
+  const data = location?.state?.data;
+  console.log(data)
   const [doctor, setDoctor] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    age: "",
-    gender: "",
-    address: "",
-    department: "",
-    qualification: "",
-    experience: "",
-    charges: "",
-    image: "",
+    name: data.users.name ,
+    email: data.users.email,
+    phone: data.users.phone,
+    age: data.users.age,
+    gender: data.users.gender,
+    address: data.users.address,
+    department: data.department.id,
+    qualification: data.qualification,
+    experience: data.experience,
+    charges: data.charges,
+    image: data.users.image,
   });
   const [error, setError] = useState({
     errname: false,
@@ -145,7 +149,7 @@ export default function AddDoctor() {
     ) {
       return;
     } else {
-      addDoctorMutation.mutate();
+      editDoctorMutation.mutate();
     }
   }
 
@@ -154,8 +158,9 @@ export default function AddDoctor() {
       const response = await useApi({
         query: `
     mutation {
-      addDoctor(
+      editDoctor(
         input: {
+            id : "${data.users.id}"
             name: "${doctor.name}"
             email: "${doctor.email}"
             password: "123456"
@@ -224,13 +229,13 @@ export default function AddDoctor() {
     queryFn: getDepartments,
   });
 
-  const addDoctorMutation = useMutation({
+  const editDoctorMutation = useMutation({
     mutationFn: handleAddDoctor,
     onSuccess: async () => {
       await queryClient.invalidateQueries({
         queryKey: ["doctors"],
       });
-       navigate("/doctors");
+      navigate("/doctors");
     },
   });
 
@@ -462,7 +467,7 @@ export default function AddDoctor() {
             sx={{ mt: "15px" }}
             onClick={handleDoctor}
           >
-            Add Doctor
+            Edit Doctor
           </Button>
         </Paper>
       </Box>

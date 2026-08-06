@@ -1,4 +1,5 @@
 import type CreateDoctorArguments from "../Arguments/Doctor/CreateDoctor.js";
+import type GetDoctorArguments from "../Arguments/Doctor/GetDoctor.js";
 import type UpdateDoctorArguments from "../Arguments/Doctor/UpdateDoctor.js";
 import { database } from "../database.js";
 import Department from "../models/Department.js";
@@ -10,11 +11,22 @@ export default class DoctorService {
   private doctorRepo = database.getRepository(Doctor);
   private usersRepo = database.getRepository(Users);
 
-  async getDoctor() {
+  async getDoctor({ department_id }: GetDoctorArguments) {
+    let doctors;
     try {
-      const doctors = await this.doctorRepo.find({
-        relations: { users: true, department: true },
-      });
+      if (department_id) {
+        doctors = await this.doctorRepo.find({
+          where: { department: { id: department_id } },
+          relations: {
+            department: true,
+            users: true,
+          },
+        });
+      } else {
+        doctors = await this.doctorRepo.find({
+          relations: { users: true, department: true },
+        });
+      }
       return {
         success: true,
         message: "Doctors successfully fetched",
@@ -22,7 +34,7 @@ export default class DoctorService {
       };
     } catch (error) {
       console.log(error);
-      return {
+      throw {
         success: false,
         message: "Error while getting the doctors",
       };
@@ -43,7 +55,7 @@ export default class DoctorService {
     qualification,
     experience,
     charges,
-    status 
+    status,
   }: CreateDoctorArguments) {
     try {
       console.log(
@@ -65,7 +77,7 @@ export default class DoctorService {
       const depeartmentRepo = database.getRepository(Department);
       const userEmail = await this.usersRepo.findOneBy({ email: email });
       if (userEmail) {
-        return {
+        throw {
           success: false,
           message: "User already present",
         };
@@ -87,7 +99,7 @@ export default class DoctorService {
       const userId = await this.usersRepo.save(user);
       const departmentId = await depeartmentRepo.findOneBy({ id: department });
       if (!departmentId) {
-        return {
+        throw {
           success: false,
           message: "Department not found",
         };
@@ -99,7 +111,7 @@ export default class DoctorService {
           qualification,
           experience,
           charges,
-          status
+          status,
         });
 
         await this.doctorRepo.save(doctors);
@@ -110,7 +122,7 @@ export default class DoctorService {
       };
     } catch (error) {
       console.log(error);
-      return {
+      throw {
         success: false,
         message: "Error while creating the doctors",
       };
@@ -145,16 +157,16 @@ export default class DoctorService {
       const doctor = await this.doctorRepo.findOne({
         where: { users: { id: user.id } },
       });
-      console.log(doctor)
+      console.log(doctor);
       if (doctor) {
         const doctorInput = {
           qualification: input.qualification || doctor.qualification,
           experience: input.experience || doctor.experience,
           charges: input.charges || doctor.charges,
-          status : input.status ?? doctor.status
+          status: input.status ?? doctor.status,
         };
-        console.log(input.status)
-        await this.doctorRepo.update({ id: doctor.id }, doctorInput );
+        console.log(input.status);
+        await this.doctorRepo.update({ id: doctor.id }, doctorInput);
       } else {
         console.log("No doctor");
       }
@@ -170,6 +182,4 @@ export default class DoctorService {
       };
     }
   }
-
-
 }

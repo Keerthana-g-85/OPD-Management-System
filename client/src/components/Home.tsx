@@ -119,14 +119,28 @@ export default function Home() {
       text: "Patient",
       icon: <AddBoxIcon />,
       path: "/patients",
-
     },
     {
       text: "Book Appointment",
       icon: <AddBoxIcon />,
       path: "/bookappoitment",
+    },
 
-    }
+    {
+      text: "Add Consultation",
+      icon: <AddBoxIcon />,
+      path: "/add_consultation",
+    },
+    {
+      text: "Add Prescription",
+      icon: <AddBoxIcon />,
+      path: "/add_prescription",
+    },
+    {
+      text: "Appointment",
+      icon: <AddBoxIcon />,
+      path: "/appointment",
+    },
   ];
 
   return (

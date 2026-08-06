@@ -3,9 +3,11 @@ import useApi from "./Api";
 import { Button, Card, CardMedia, Typography } from "@mui/material";
 import Grid from "@mui/material/Grid";
 import { useNavigate } from "react-router";
-import type { Pharmacist, Users } from "../Types";
+import type { Pharmacist } from "../Types";
+import { useSelector } from "react-redux";
 export default function Pharmacist() {
   const navigate = useNavigate();
+  const role = useSelector((state: any) => state.login.user?.role);
   async function getPharmacist() {
     try {
       const response = await useApi({
@@ -54,13 +56,15 @@ export default function Pharmacist() {
   });
   return (
     <>
-      <Button
-        onClick={() => {
-          navigate("/add_pharmacist");
-        }}
-      >
-        ADD PHARMACIST
-      </Button>
+      {role === "admin" ? (
+        <Button
+          onClick={() => {
+            navigate("/add_pharmacist");
+          }}
+        >
+          ADD PHARMACIST
+        </Button>
+      ) : null}
       {parmacist?.map((data: Pharmacist) => {
         return (
           <div key={data.id}>
@@ -96,6 +100,16 @@ export default function Pharmacist() {
                   <Typography>Location : {data.users.address}</Typography>
                   <Typography>Experience : {data.experience}</Typography>
                   <Typography>Qualification : {data.qualification}</Typography>
+                  {role === "admin" ? (
+                    <Button
+                      variant="contained"
+                      onClick={() => {
+                        navigate("/edit_pharmasist", { state: { data } });
+                      }}
+                    >
+                      Edit
+                    </Button>
+                  ) : null}
                 </Grid>
               </Grid>
             </Card>

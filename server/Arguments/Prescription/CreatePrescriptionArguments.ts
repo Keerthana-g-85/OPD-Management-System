@@ -2,9 +2,6 @@ import { Field, ID, InputType, Int } from "type-graphql";
 
 @InputType()
 export default class CreatePrescriptionArguments {
-  @Field(() => ID)
-  consultation_id!: string;
-
   @Field(() => String)
   dosage!: string;
 
@@ -14,6 +11,6 @@ export default class CreatePrescriptionArguments {
   @Field(() => Int)
   duration!: number;
 
-  @Field(()=>String)
-  name! : string
+  @Field(() => String)
+  name!: string;
 }

@@ -10,4 +10,9 @@ export default class DepartmentResolver{
     addDepartment(@Arg("input",()=>CreateDepartmentArguments)input:CreateDepartmentArguments){
         return departmentService.createDepeartment(input)
     }
+
+    @Query(()=>DepartmentResponse)
+    getDepartment(){
+        return departmentService.getDepartment()
+    }
 }

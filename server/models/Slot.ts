@@ -21,10 +21,6 @@ export default class Slot {
   @Column({ type: "varchar" })
   slot!: string;
 
-  @Field(() => Boolean)
-  @Column({ type: "boolean" })
-  status!: Boolean;
-
   @Field(() => Date)
   @CreateDateColumn()
   createdAt!: Date;

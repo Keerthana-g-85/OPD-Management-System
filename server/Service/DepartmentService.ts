@@ -26,4 +26,22 @@ export default class DepartmentService {
       };
     }
   }
+
+  async getDepartment(){
+    try{
+      const departments = await this.departmentRepo.find()
+      return {
+        success : true ,
+        message : "All departments",
+        departments
+      }
+
+    }catch(error){
+      console.log(error)
+      return{
+        success : false ,
+        message : "Error while getting department"
+      }
+    }
+  }
 }

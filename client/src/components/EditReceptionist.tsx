@@ -3,21 +3,23 @@ import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import TextField from "@mui/material/TextField";
 import { useState } from "react";
-import useApi from "./Api";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useNavigate } from "react-router";
 import Grid from "@mui/material/Grid";
-export default function AddParmacist() {
-  const [parmacist, setParmacist] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    age: "",
-    gender: "",
-    address: "",
-    image: "",
-    qualification: "",
-    experience: "",
+import { useLocation, useNavigate } from "react-router";
+import useApi from "./Api";
+
+export default function EditReceptionist() {
+  const location = useLocation();
+  const data = location?.state?.data;
+  console.log(data);
+  const [receptionist, setReceptionist] = useState({
+    name: data.name,
+    email: data.email,
+    phone: data.phone,
+    age: data.age,
+    gender: data.gender,
+    address: data.address,
+    image: data.image,
   });
   const [error, setError] = useState({
     errname: false,
@@ -27,8 +29,6 @@ export default function AddParmacist() {
     errgender: false,
     erraddress: false,
     errimage: false,
-    errqualification: false,
-    errexperience: false,
   });
   const [errmessage, setErrmessage] = useState({
     errname: "",
@@ -38,23 +38,21 @@ export default function AddParmacist() {
     errgender: "",
     erraddress: "",
     errimage: "",
-    errqualification: "",
-    errexperience: "",
   });
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  function handlePharmacist() {
-    if (!parmacist.name) {
+  function handleReceptionist() {
+    if (!receptionist.name) {
       setError((prev) => ({ ...prev, errname: true }));
       setErrmessage((prev) => ({ ...prev, errname: "Name is required" }));
     }
 
-    if (!parmacist.email) {
+    if (!receptionist.email) {
       setError((prev) => ({ ...prev, erremail: true }));
       setErrmessage((prev) => ({ ...prev, erremail: "Email is required" }));
     }
 
-    if (!parmacist.phone) {
+    if (!receptionist.phone) {
       setError((prev) => ({ ...prev, errphone: true }));
       setErrmessage((prev) => ({
         ...prev,
@@ -62,17 +60,17 @@ export default function AddParmacist() {
       }));
     }
 
-    if (!parmacist.age) {
+    if (!receptionist.age) {
       setError((prev) => ({ ...prev, errage: true }));
       setErrmessage((prev) => ({ ...prev, errage: "Age is required" }));
     }
 
-    if (!parmacist.gender) {
+    if (!receptionist.gender) {
       setError((prev) => ({ ...prev, errgender: true }));
       setErrmessage((prev) => ({ ...prev, errgender: "Gender is required" }));
     }
 
-    if (!parmacist.address) {
+    if (!receptionist.address) {
       setError((prev) => ({ ...prev, erraddress: true }));
       setErrmessage((prev) => ({
         ...prev,
@@ -80,62 +78,43 @@ export default function AddParmacist() {
       }));
     }
 
-    if (!parmacist.image) {
+    if (!receptionist.image) {
       setError((prev) => ({ ...prev, errimage: true }));
-      setErrmessage((prev) => ({ ...prev, errimage: "Image is required" }));
-    }
-
-    if (!parmacist.qualification) {
-      setError((prev) => ({ ...prev, errqualification: true }));
       setErrmessage((prev) => ({
         ...prev,
-        errqualification: "Qualification is required",
-      }));
-    }
-
-    if (!parmacist.experience) {
-      setError((prev) => ({ ...prev, errexperience: true }));
-      setErrmessage((prev) => ({
-        ...prev,
-        errexperience: "Experience is required",
+        errimage: "Image is required",
       }));
     }
 
     if (
-      !parmacist.name ||
-      !parmacist.email ||
-      !parmacist.phone ||
-      !parmacist.age ||
-      !parmacist.gender ||
-      !parmacist.address ||
-      !parmacist.image ||
-      !parmacist.qualification ||
-      !parmacist.experience
+      !receptionist.name ||
+      !receptionist.email ||
+      !receptionist.phone ||
+      !receptionist.age ||
+      !receptionist.gender ||
+      !receptionist.address ||
+      !receptionist.image
     ) {
       return;
-    } else {
-      addPharmacistMutation.mutate();
     }
-  }
 
-  async function handleAddparmacist() {
+    addReceptionistMutation.mutate();
+  }
+  async function handleAddreceptionist() {
     const response = await useApi({
       query: `
       mutation {
-        addPharmacist(
+        editUser(
           input: {
-            name: "${parmacist.name}"
-            email: "${parmacist.email}"
-            password: "123456"
-            age: ${parmacist.age}
-            gender: "${parmacist.gender}"
-            address: "${parmacist.address}"
-            phone: "${parmacist.phone}"
-            role: pharmacists
-            image: "${parmacist.image}"
-            qualification: "${parmacist.qualification}"
-            experience: ${parmacist.experience}
-            status: true
+            id : "${data.id}"
+            name: "${receptionist.name}"
+            email: "${receptionist.email}"
+            age: ${receptionist.age}
+            password : "123456"
+            gender: "${receptionist.gender}"
+            address: "${receptionist.address}"
+            phone: "${receptionist.phone}"
+            image: "${receptionist.image}"
           }
         ) {
           success
@@ -147,7 +126,7 @@ export default function AddParmacist() {
 
     console.log(response);
 
-    setParmacist({
+    setReceptionist({
       name: "",
       email: "",
       phone: "",
@@ -155,20 +134,18 @@ export default function AddParmacist() {
       gender: "",
       address: "",
       image: "",
-      qualification: "",
-      experience: "",
     });
 
     return response;
   }
-  const addPharmacistMutation = useMutation({
-    mutationFn: handleAddparmacist,
+  const addReceptionistMutation = useMutation({
+    mutationFn: handleAddreceptionist,
     onSuccess: async () => {
       await queryClient.invalidateQueries({
-        queryKey: ["pharmacists"],
+        queryKey: ["receptionists"],
       });
 
-      navigate("/pharmacist");
+      navigate("/receptionist");
     },
   });
   return (
@@ -192,7 +169,7 @@ export default function AddParmacist() {
           <Button
             variant="contained"
             sx={{ mb: "20px" }}
-            onClick={() => navigate("/pharmacist")}
+            onClick={() => navigate("/receptionist")}
           >
             Back
           </Button>
@@ -204,9 +181,9 @@ export default function AddParmacist() {
                 fullWidth
                 error={error.errname}
                 helperText={errmessage.errname}
-                value={parmacist.name}
+                value={receptionist.name}
                 onChange={(e) => {
-                  setParmacist({ ...parmacist, name: e.target.value });
+                  setReceptionist({ ...receptionist, name: e.target.value });
                   setError((prev) => ({ ...prev, errname: false }));
                   setErrmessage((prev) => ({ ...prev, errname: "" }));
                 }}
@@ -219,9 +196,9 @@ export default function AddParmacist() {
                 fullWidth
                 error={error.erremail}
                 helperText={errmessage.erremail}
-                value={parmacist.email}
+                value={receptionist.email}
                 onChange={(e) => {
-                  setParmacist({ ...parmacist, email: e.target.value });
+                  setReceptionist({ ...receptionist, email: e.target.value });
                   setError((prev) => ({ ...prev, erremail: false }));
                   setErrmessage((prev) => ({ ...prev, erremail: "" }));
                 }}
@@ -234,9 +211,9 @@ export default function AddParmacist() {
                 fullWidth
                 error={error.errphone}
                 helperText={errmessage.errphone}
-                value={parmacist.phone}
+                value={receptionist.phone}
                 onChange={(e) => {
-                  setParmacist({ ...parmacist, phone: e.target.value });
+                  setReceptionist({ ...receptionist, phone: e.target.value });
                   setError((prev) => ({ ...prev, errphone: false }));
                   setErrmessage((prev) => ({ ...prev, errphone: "" }));
                 }}
@@ -249,9 +226,9 @@ export default function AddParmacist() {
                 fullWidth
                 error={error.errage}
                 helperText={errmessage.errage}
-                value={parmacist.age}
+                value={receptionist.age}
                 onChange={(e) => {
-                  setParmacist({ ...parmacist, age: e.target.value });
+                  setReceptionist({ ...receptionist, age: e.target.value });
                   setError((prev) => ({ ...prev, errage: false }));
                   setErrmessage((prev) => ({ ...prev, errage: "" }));
                 }}
@@ -264,9 +241,9 @@ export default function AddParmacist() {
                 fullWidth
                 error={error.errgender}
                 helperText={errmessage.errgender}
-                value={parmacist.gender}
+                value={receptionist.gender}
                 onChange={(e) => {
-                  setParmacist({ ...parmacist, gender: e.target.value });
+                  setReceptionist({ ...receptionist, gender: e.target.value });
                   setError((prev) => ({ ...prev, errgender: false }));
                   setErrmessage((prev) => ({ ...prev, errgender: "" }));
                 }}
@@ -279,9 +256,9 @@ export default function AddParmacist() {
                 fullWidth
                 error={error.erraddress}
                 helperText={errmessage.erraddress}
-                value={parmacist.address}
+                value={receptionist.address}
                 onChange={(e) => {
-                  setParmacist({ ...parmacist, address: e.target.value });
+                  setReceptionist({ ...receptionist, address: e.target.value });
                   setError((prev) => ({ ...prev, erraddress: false }));
                   setErrmessage((prev) => ({ ...prev, erraddress: "" }));
                 }}
@@ -294,59 +271,11 @@ export default function AddParmacist() {
                 fullWidth
                 error={error.errimage}
                 helperText={errmessage.errimage}
-                value={parmacist.image}
+                value={receptionist.image}
                 onChange={(e) => {
-                  setParmacist({ ...parmacist, image: e.target.value });
+                  setReceptionist({ ...receptionist, image: e.target.value });
                   setError((prev) => ({ ...prev, errimage: false }));
                   setErrmessage((prev) => ({ ...prev, errimage: "" }));
-                }}
-              />
-            </Grid>
-
-            <Grid size={{ xs: 12, md: 6 }}>
-              <Typography>Qualification</Typography>
-              <TextField
-                fullWidth
-                error={error.errqualification}
-                helperText={errmessage.errqualification}
-                value={parmacist.qualification}
-                onChange={(e) => {
-                  setParmacist({
-                    ...parmacist,
-                    qualification: e.target.value,
-                  });
-                  setError((prev) => ({
-                    ...prev,
-                    errqualification: false,
-                  }));
-                  setErrmessage((prev) => ({
-                    ...prev,
-                    errqualification: "",
-                  }));
-                }}
-              />
-            </Grid>
-
-            <Grid size={{ xs: 12, md: 6 }}>
-              <Typography>Experience</Typography>
-              <TextField
-                fullWidth
-                error={error.errexperience}
-                helperText={errmessage.errexperience}
-                value={parmacist.experience}
-                onChange={(e) => {
-                  setParmacist({
-                    ...parmacist,
-                    experience: e.target.value,
-                  });
-                  setError((prev) => ({
-                    ...prev,
-                    errexperience: false,
-                  }));
-                  setErrmessage((prev) => ({
-                    ...prev,
-                    errexperience: "",
-                  }));
                 }}
               />
             </Grid>
@@ -355,9 +284,9 @@ export default function AddParmacist() {
           <Button
             variant="contained"
             sx={{ mt: "20px" }}
-            onClick={handlePharmacist}
+            onClick={handleReceptionist}
           >
-            Add Pharmacist
+            Edit Receptionist
           </Button>
         </Paper>
       </Box>

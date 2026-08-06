@@ -1,4 +1,5 @@
 import { ObjectType, Field } from "type-graphql";
+import Consultation from "../models/Consultation.js";
 
 @ObjectType()
 export default class ConsultationResponse {
@@ -7,4 +8,7 @@ export default class ConsultationResponse {
 
   @Field(() => String)
   message!: string;
+
+  @Field(() => Consultation, { nullable: true })
+  consultation?: Consultation;
 }

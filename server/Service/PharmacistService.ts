@@ -1,9 +1,11 @@
+import { error } from "node:console";
 import CreatePharmacistArguments from "../Arguments/Pharmacist/CreatePharmacist.js";
 import UpdatePharmacistArguments from "../Arguments/Pharmacist/UpdatePharmacist.js";
 import { database } from "../database.js";
 import Pharmacist from "../models/Pharmacist.js";
 import Users from "../models/Users.js";
 import bcrypt from "bcrypt";
+import { GraphQLError } from "graphql";
 
 export default class PharmacistService {
   private pharmacistRepo = database.getRepository(Pharmacist);
@@ -88,14 +90,17 @@ export default class PharmacistService {
     }
   }
 
-  async updatePharmacist(input: UpdatePharmacistArguments) {
+  async updatePharmacist(input: UpdatePharmacistArguments):  Promise<{
+    success: boolean;
+    message: string;
+} | 
+  GraphQLError>  {
     try {
       const user = await this.usersRepo.findOneBy({ id: input.id });
       if (!user) {
-        return {
-          success: false,
-          message: "pharmacist not present pharmacists",
-        };
+        throw new GraphQLError(
+          "pharmacist not present pharmacists",
+        ) 
       }
       const userInput = {
         name: input.name || user.name,
@@ -133,11 +138,15 @@ export default class PharmacistService {
         message: "pharmacist updated",
       };
     } catch (error) {
-      console.log(error);
-      return {
-        success: false,
-        message: "Error while updating the pharmacists",
-      };
+      console.log('bfxgf', error);
+      throw new GraphQLError(
+          "Error while updating the pharmacists",
+          {
+            extensions: {
+    code: 'FORBIDDEN',
+  },
+          }
+        ) 
     }
   }
 }

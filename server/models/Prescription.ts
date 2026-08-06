@@ -20,7 +20,7 @@ export default class Prescription {
   id!: string;
 
   @Field(() => Consultation)
-  @ManyToOne(() => Consultation)
+  @ManyToOne(() => Consultation ,{ onDelete: "CASCADE" })
   consultation!: Consultation;
 
   @Field(()=>String)

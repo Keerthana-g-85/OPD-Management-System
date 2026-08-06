@@ -28,12 +28,12 @@ export default class Appointment {
   @PrimaryGeneratedColumn("uuid")
   id!: string;
 
-  @Field(() => Date)
+  @Field(() => String)
   @Column({ type: "date" })
-  appointment_date!: Date;
+  appointment_date!: string;
 
   @Field(()=>Slot)
-  @OneToOne(()=>Slot)
+  @ManyToOne(()=>Slot)
   @JoinColumn({name : "slot_id"})
   slot!:Slot;
 
@@ -50,7 +50,6 @@ export default class Appointment {
   @Field(()=>APStatus)
   @Column({ type : "enum" , enum : APStatus})
   status! : APStatus
-
 
   @Field(() => Date)
   @CreateDateColumn()

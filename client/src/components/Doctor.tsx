@@ -1,13 +1,15 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Box, Button, Card, CardMedia, Typography } from "@mui/material";
 import Grid from "@mui/material/Grid";
 import { useNavigate } from "react-router";
 import type { Doctors } from "../Types";
 import useApi from "./Api";
+import { useSelector } from "react-redux";
 export default function Doctors() {
   const navigate = useNavigate();
-  // const queryClient = useQueryClient();
-
+  const role = useSelector((state: any) => state.login.user?.role);
+  console.log(role);
+  const queryClient = useQueryClient();
   async function handleDoctors() {
     try {
       const response = await useApi({
@@ -20,6 +22,7 @@ export default function Doctors() {
                             qualification
                             experience
                             charges
+                            status
                             users {
                                 id
                                 name
@@ -55,17 +58,48 @@ export default function Doctors() {
     queryKey: ["doctors"],
     queryFn: handleDoctors,
   });
+
+  async function handleEdit(data: Doctors) {
+    const response = await useApi({
+      query: `
+    mutation {
+      editDoctor(
+        input: {
+            id : "${data.users.id}"
+            status: ${!data.status}
+        }
+    ) {
+        success
+        message
+    }
+    }
+  `,
+    });
+    console.log(response);
+
+    return response;
+  }
+  const editDoctorMutation = useMutation({
+    mutationFn: handleEdit,
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: ["doctors"],
+      });
+    },
+  });
   return (
     <>
-      <Box>
-        <Button
-          onClick={() => {
-            navigate("/add_doctor");
-          }}
-        >
-          ADD DOCTOR
-        </Button>
-      </Box>
+      {role === "admin" ? (
+        <Box>
+          <Button
+            onClick={() => {
+              navigate("/add_doctor");
+            }}
+          >
+            ADD DOCTOR
+          </Button>
+        </Box>
+      ) : null}
       {doctor?.map((data: Doctors) => {
         return (
           <div key={data.id}>
@@ -93,6 +127,9 @@ export default function Doctors() {
                   >
                     Dr. {data.users.name}
                   </Typography>
+                  <Button onClick={() => editDoctorMutation.mutate(data)}>
+                    {data.status ? "Active" : "Not Active"}
+                  </Button>
                   <hr />
                   <Typography>Email : {data.users.email}</Typography>
                   <Typography>Age : {data.users.age}</Typography>
@@ -103,6 +140,16 @@ export default function Doctors() {
                   <Typography>Experience : {data.experience}+ years</Typography>
                   <Typography>Consultation Charges : {data.charges}</Typography>
                   <Typography>Location : {data.users.address}</Typography>
+                  {role === "admin" ? (
+                    <Button
+                      variant="contained"
+                      onClick={() => {
+                        navigate("/edit_doctor", { state: { data } });
+                      }}
+                    >
+                      Edit
+                    </Button>
+                  ) : null}
                 </Grid>
               </Grid>
             </Card>
