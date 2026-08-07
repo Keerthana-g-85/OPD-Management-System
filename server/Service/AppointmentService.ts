@@ -94,23 +94,51 @@ export default class AppoitmentService {
 
   async getAppointmentSlots(args: GetAppointmentArgument) {
     try {
-      const doctorappoint = await this.appoitmentRepo.find({
-        where: {
-          doctor: {
-            id: args.doctor_id,
+      if (args.appointment_date !== undefined) {
+        const doctorappoint = await this.appoitmentRepo.find({
+          where: {
+            doctor: {
+              id: args.doctor_id,
+            },
+            appointment_date: args.appointment_date,
           },
-          appointment_date: args.appointment_date,
-        },
-        relations: {
-          slot: true,
-        },
-      });
+          relations: {
+            slot: true,
+          },
+        });
 
-      return {
-        success: true,
-        message: "Booked slots fetched successfully",
-        slots: doctorappoint.map((a) => a.slot),
-      };
+        return {
+          success: true,
+          message: "Booked slots fetched successfully",
+          slots: doctorappoint.map((a) => a.slot),
+        };
+      } else {
+        console.log(args.doctor_id);
+        const appointment = await this.appoitmentRepo.find({
+          where: {
+            doctor: {
+              users: {
+                id: args.doctor_id, 
+              },
+            },
+          },
+          relations: {
+            slot: true,
+            doctor: {
+              users: true,
+            },
+            patient: {
+              users: true,
+            },
+          },
+        });
+        console.log(appointment);
+        return {
+          success: true,
+          message: "Doctor aAppointment successfully fetched",
+          appointment,
+        };
+      }
     } catch (error) {
       console.log(error);
       return {

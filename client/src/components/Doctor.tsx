@@ -5,54 +5,18 @@ import { useNavigate } from "react-router";
 import type { Doctors } from "../Types";
 import useApi from "./Api";
 import { useSelector } from "react-redux";
+import { request } from "graphql-request";
+import { GET_DOCTORS } from "../graphql/Query/DOCTOR";
+
 export default function Doctors() {
-  const navigate = useNavigate();
   const role = useSelector((state: any) => state.login.user?.role);
   console.log(role);
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
-  async function handleDoctors() {
-    try {
-      const response = await useApi({
-        query: `query GetDoctor {
-                    getDoctor {
-                        success
-                        message
-                        doctors {
-                            id
-                            qualification
-                            experience
-                            charges
-                            status
-                            users {
-                                id
-                                name
-                                email
-                                password
-                                age
-                                gender
-                                address
-                                phone
-                                role
-                                image
-                            }
-                            department {
-                                id
-                                name
-                            }
-                        }
-                    }
-                    }
-  `,
-      });
-      console.log(response);
-      console.log(response.data.data.getDoctor.doctors);
-      const data = response.data.data.getDoctor.doctors;
-      console.log(data);
 
-      return data;
-    } catch (error) {
-      console.log(error);
-    }
+  async function handleDoctors() {
+    const data = await request("http://localhost:3040/graphql", GET_DOCTORS);
+    return data.getDoctor.doctors;
   }
   const { data: doctor } = useQuery({
     queryKey: ["doctors"],
@@ -76,9 +40,9 @@ export default function Doctors() {
   `,
     });
     console.log(response);
-
     return response;
   }
+
   const editDoctorMutation = useMutation({
     mutationFn: handleEdit,
     onSuccess: async () => {

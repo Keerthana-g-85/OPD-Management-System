@@ -19,6 +19,7 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import AddBoxIcon from "@mui/icons-material/AddBox";
 import { Outlet, useNavigate } from "react-router";
+import { useSelector } from "react-redux";
 
 const drawerWidth = 240;
 
@@ -85,6 +86,7 @@ export default function Home() {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
   const navigate = useNavigate();
+  const user = useSelector((state: any) => state.login.user);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -94,6 +96,35 @@ export default function Home() {
     setOpen(false);
   };
 
+  let adminItems = [
+    {
+      text: "Department",
+      icon: <AddBoxIcon />,
+      path: "/departments",
+    },
+
+    {
+      text: "Appointment",
+      icon: <AddBoxIcon />,
+      path: "/appointment",
+    },
+  ];
+
+  let doctorItems = [
+    {
+      text: "Appointments",
+      icon: <AddBoxIcon />,
+      path: "/doctor_appointment",
+    },
+  ];
+
+  let receptionistItems = [
+    {
+      text: "Book Appointment",
+      icon: <AddBoxIcon />,
+      path: "/bookappoitment",
+    },
+  ];
   let menuItems = [
     {
       text: "Home",
@@ -120,28 +151,15 @@ export default function Home() {
       icon: <AddBoxIcon />,
       path: "/patients",
     },
-    {
-      text: "Book Appointment",
-      icon: <AddBoxIcon />,
-      path: "/bookappoitment",
-    },
-
-    {
-      text: "Add Consultation",
-      icon: <AddBoxIcon />,
-      path: "/add_consultation",
-    },
-    {
-      text: "Add Prescription",
-      icon: <AddBoxIcon />,
-      path: "/add_prescription",
-    },
-    {
-      text: "Appointment",
-      icon: <AddBoxIcon />,
-      path: "/appointment",
-    },
   ];
+
+  if (user.role === "admin") {
+    menuItems = [...menuItems, ...adminItems];
+  } else if (user.role === "doctor") {
+    menuItems = [...menuItems, ...doctorItems];
+  } else if (user.role === "receptionists") {
+    menuItems = [...menuItems, ...receptionistItems];
+  }
 
   return (
     <Box sx={{ display: "flex" }}>

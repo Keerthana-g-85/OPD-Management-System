@@ -4,8 +4,11 @@ import Grid from "@mui/material/Grid";
 import { useNavigate } from "react-router";
 import type { Patient } from "../Types";
 import useApi from "./Api";
+import { useSelector } from "react-redux";
+
 export default function Patient() {
   const navigate = useNavigate();
+  const role = useSelector((state: any) => state.login.user?.role);
   // const queryClient = useQueryClient();
 
   async function handlePatient() {
@@ -58,15 +61,18 @@ export default function Patient() {
   });
   return (
     <>
-      <Box>
-        <Button
-          onClick={() => {
-            navigate("/add_patient");
-          }}
-        >
-          ADD PATIENT
-        </Button>
-      </Box>
+      {role === "receptionist" ? (
+        <Box>
+          <Button
+            onClick={() => {
+              navigate("/add_patient");
+            }}
+          >
+            ADD PATIENT
+          </Button>
+        </Box>
+      ) : null}
+
       {patient?.map((data: Patient) => {
         return (
           <div key={data.id}>

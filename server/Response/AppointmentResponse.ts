@@ -10,8 +10,8 @@ export default class AppointmentResponse {
   @Field(() => String)
   message!: string;
 
-  @Field(()=>[Appointment])
-  appointment? :Appointment[]
+  @Field(() => [Appointment], { nullable: true })
+  appointment?: Appointment[];
 
   @Field(() => [Slot], { nullable: true })
   slots?: Slot[];

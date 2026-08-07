@@ -2,10 +2,12 @@ import type CreateConsultationArguments from "../Arguments/Consultation.ts/Creat
 import { database } from "../database.js";
 import Consultation from "../models/Consultation.js";
 import Prescription from "../models/Prescription.js";
+import Appointment, { APStatus } from "../models/Appointment.js";
 
 export default class ConsultationService {
   private consultationRepo = database.getRepository(Consultation);
   private prescriptionRepo = database.getRepository(Prescription);
+  private appointmentRepo = database.getRepository(Appointment);
   async addConsultation({
     appointment_id,
     notes,
@@ -46,6 +48,12 @@ export default class ConsultationService {
         });
 
         await this.prescriptionRepo.save(prescription);
+        await this.appointmentRepo.update(
+          { id: appointment_id },
+          {
+            status: APStatus.prescription_generated,
+          },
+        );
       }
 
       return {

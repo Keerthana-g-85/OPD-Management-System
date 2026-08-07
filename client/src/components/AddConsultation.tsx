@@ -2,8 +2,12 @@ import { Button, TextField, Typography } from "@mui/material";
 import Grid from "@mui/material/Grid";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
-import useApi from "./Api";
 import type { PrescriptionInput } from "../Types";
+import { ADD_CONSULTATION } from "../graphql/mutations/ADD_CONSULTATION";
+import { request } from "graphql-request";
+import { useLocation } from "react-router";
+import { useNavigate } from "react-router";
+
 export default function AddConsultation() {
   const [consultation, setConsultation] = useState({
     appointment: "",
@@ -43,12 +47,12 @@ export default function AddConsultation() {
     frequency: "",
     duration: "",
   });
+  const location = useLocation()
+  const data = location?.state?.row
+  console.log(data)
+  const navigate = useNavigate();
 
-  function handlePrescription({
-    index,
-    field,
-    value,
-  }: PrescriptionInput) {
+  function handlePrescription({ index, field, value }: PrescriptionInput) {
     setPrescriptions((prev) => {
       const updated = [...prev];
 
@@ -92,45 +96,40 @@ export default function AddConsultation() {
     }
   }
 
+async function handleAddConsultation() {
+  try {
+    const response = await request("http://localhost:3040/graphql", ADD_CONSULTATION, {
+      input: {
+        appointment_id: data.id,
+        notes: consultation.notes,
+        follow_up: consultation.follow_up,
+        status: true,
+        prescriptions: prescriptions.map((item) => ({
+          name: item.name,
+          dosage: item.dosage,
+          frequency: Number(item.frequency),
+          duration: Number(item.duration),
+        })),
+      },
+    });
+
+    console.log(response);
+  } catch (error) {
+    console.log(error);
+  }
+}
+
   const addConsultationMutataion = useMutation({
     mutationFn: handleAddConsultation,
+    onSuccess: () => {
+    navigate("/doctor_appointment"); 
+  },
     // onSuccess: async () => {
     //   await queryClient.invalidateQueries({
     //     queryKey: ["consultation"],
     //   });
     // },
   });
-  async function handleAddConsultation() {
-    const prescriptionData = prescriptions
-      .map(
-        (item) => `{
-        name: "${item.name}"
-        dosage: "${item.dosage}"
-        frequency: ${item.frequency}
-        duration: ${item.duration}
-      }`,
-      )
-      .join(",");
-
-    const response = await useApi({
-      query: `mutation {
-      addConsultation(
-        input: {
-          appointment_id: "eca0bc71-4783-4725-9359-c74973404979"
-          notes: "${consultation.notes}"
-          follow_up: "${consultation.follow_up}"
-          status: true
-          prescriptions: [${prescriptionData}]
-        }
-      ) {
-        success
-        message
-      }
-    }`,
-    });
-
-    console.log(response);
-  }
   return (
     <>
       <Grid container spacing={3}>
@@ -188,7 +187,11 @@ export default function AddConsultation() {
               fullWidth
               value={item.name}
               onChange={(e) =>
-                handlePrescription({index:index, field :"name", value: e.target.value})
+                handlePrescription({
+                  index: index,
+                  field: "name",
+                  value: e.target.value,
+                })
               }
             />
           </Grid>
@@ -199,7 +202,11 @@ export default function AddConsultation() {
               fullWidth
               value={item.dosage}
               onChange={(e) =>
-                handlePrescription({index:index, field :"dosage", value: e.target.value})
+                handlePrescription({
+                  index: index,
+                  field: "dosage",
+                  value: e.target.value,
+                })
               }
             />
           </Grid>
@@ -210,7 +217,11 @@ export default function AddConsultation() {
               fullWidth
               value={item.frequency}
               onChange={(e) =>
-                handlePrescription({index:index, field :"frequency", value: e.target.value})
+                handlePrescription({
+                  index: index,
+                  field: "frequency",
+                  value: e.target.value,
+                })
               }
             />
           </Grid>
@@ -221,7 +232,11 @@ export default function AddConsultation() {
               fullWidth
               value={item.duration}
               onChange={(e) =>
-                handlePrescription({index:index, field :"duration", value: e.target.value})
+                handlePrescription({
+                  index: index,
+                  field: "duration",
+                  value: e.target.value,
+                })
               }
             />
           </Grid>
@@ -231,7 +246,7 @@ export default function AddConsultation() {
               <Button
                 color="error"
                 onClick={() =>
-                  setPrescriptions((prev) => prev.filter((a, i) => i !== index))
+                  setPrescriptions((prev) => prev.filter((_ , i) => i !== index))
                 }
               >
                 Cancel
