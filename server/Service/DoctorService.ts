@@ -21,10 +21,20 @@ export default class DoctorService {
             department: true,
             users: true,
           },
+          order: {
+            users: {
+              createdAt: "DESC",
+            },
+          },
         });
       } else {
         doctors = await this.doctorRepo.find({
           relations: { users: true, department: true },
+          order: {
+            users: {
+              createdAt: "DESC",
+            },
+          },
         });
       }
       return {
@@ -165,7 +175,7 @@ export default class DoctorService {
           charges: input.charges || doctor.charges,
           status: input.status ?? doctor.status,
         };
-        console.log(input.status);
+        console.log(input);
         await this.doctorRepo.update({ id: doctor.id }, doctorInput);
       } else {
         console.log("No doctor");
