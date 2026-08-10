@@ -5,10 +5,13 @@ import type { GetAppointmentArgument } from "../Arguments/Appointment/GetAppoint
 import { database } from "../database.js";
 import Appoitment, { APStatus } from "../models/Appointment.js";
 import Patient from "../models/Patient.js";
+import type RescheduleAppointmentArguments from "../Arguments/Appointment/ResheduleAppointment.js";
+import Slot from "../models/Slot.js";
 
 export default class AppoitmentService {
   private appoitmentRepo = database.getRepository(Appoitment);
   private patientRepo = database.getRepository(Patient);
+  private slotRepo = database.getRepository(Slot);
   async createAppitment({
     patient_id,
     doctor_id,
@@ -164,29 +167,123 @@ export default class AppoitmentService {
     }
   }
 
-  // async cancelAppointment({ id }: CancelAppointmentArguments) {
-  //   try {
-  //     const appointment = await this.appoitmentRepo.findOneBy({
-  //       id,
-  //     });
+  async cancelAppointment({ id }: CancelAppointmentArguments) {
+    try {
+      const appointment = await this.appoitmentRepo.findOneBy({
+        id,
+      });
 
-  //     if (!appointment) {
-  //       return {
-  //         success: false,
-  //         message: "Appointment not found",
-  //       };
-  //     }
-  //     appointment.status = APStatus.cancelled;
+      if (!appointment) {
+        throw new GraphQLError("Appointment not found");
+      }
 
-  //     await this.appoitmentRepo.save(appointment);
+      if (appointment.status === APStatus.booked) {
+        await this.appoitmentRepo.update(
+          { id },
+          {
+            status: APStatus.cancelled,
+          },
+        );
+      } else {
+        throw new GraphQLError("Appointment can not be cancelled");
+      }
+      return {
+        success: true,
+        message: "Appointment cancelled successfully",
+      };
+    } catch (error) {
+      console.log(error);
+      throw new GraphQLError("Error while cancelling appointment");
+    }
+  }
 
-  //     return {
-  //       success: true,
-  //       message: "Appointment cancelled successfully",
-  //     };
-  //   } catch (error) {
-  //     console.log(error);
-  //     throw new GraphQLError("Error while cancelling appointment")
-  //   }
-  // }
+  async rescheduleAppointment({
+    id,
+    appointment_date,
+    slot_id,
+  }: RescheduleAppointmentArguments) {
+    try {
+      const appointment = await this.appoitmentRepo.findOne({
+        where: { id },
+        relations: {
+          doctor: true,
+        },
+      });
+
+      if (!appointment) {
+        throw new GraphQLError("Appointment not found");
+      }
+
+      if (appointment.status !== APStatus.booked) {
+        throw new GraphQLError("Only booked appointments can be rescheduled");
+      }
+
+      const exist = await this.appoitmentRepo.findOne({
+        where: {
+          doctor: {
+            id: appointment.doctor.id,
+          },
+          slot: {
+            id: slot_id,
+          },
+          appointment_date,
+          status: APStatus.booked,
+        },
+      });
+
+      if (exist && exist.id !== id) {
+        throw new GraphQLError("Slot already booked");
+      }
+      const slot = await this.slotRepo.findOneBy({
+        id: slot_id,
+      });
+      if (!slot) {
+        throw new GraphQLError("Slot not found");
+      }
+      await this.appoitmentRepo.update(
+        { id },
+        {
+          appointment_date,
+          slot,
+        },
+      );
+      return {
+        success: true,
+        message: "Appointment rescheduled successfully",
+      };
+    } catch (error) {
+      console.log(error);
+      throw new GraphQLError("Error while rescheduling appointment");
+    }
+  }
+  async checkedappointment(id: string) {
+    try {
+      const appointment = await this.appoitmentRepo.findOneBy({
+        id,
+      });
+
+      if (!appointment) {
+        throw new GraphQLError("Appointment not found");
+      }
+
+      if (appointment.status !== APStatus.booked) {
+        throw new GraphQLError("Can check in only booked patients");
+      }
+
+      await this.appoitmentRepo.update(
+        { id },
+        {
+          status: APStatus.checked_in,
+        },
+      );
+
+      return {
+        success: true,
+        message: "Patient checked in successfully",
+      };
+    } catch (error) {
+      console.log(error);
+      throw new GraphQLError("Error while checking in patient");
+    }
+  }
 }
