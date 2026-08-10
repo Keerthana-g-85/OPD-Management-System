@@ -20,7 +20,6 @@ export default function Receptionist() {
             id
             name
             email
-            password
             age
             gender
             address

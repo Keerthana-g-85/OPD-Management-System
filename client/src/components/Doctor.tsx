@@ -15,8 +15,15 @@ export default function Doctors() {
   const queryClient = useQueryClient();
 
   async function handleDoctors() {
-    const data = await request("http://localhost:3040/graphql", GET_DOCTORS);
-    console.log(data.getDoctor.doctors)
+    const data = await request(
+      "http://localhost:3040/graphql",
+      GET_DOCTORS,
+      {},
+      {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    );
+    console.log(data.getDoctor.doctors);
     return data.getDoctor.doctors;
   }
   const { data: doctor } = useQuery({

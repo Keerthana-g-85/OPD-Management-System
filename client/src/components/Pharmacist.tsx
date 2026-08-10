@@ -24,7 +24,6 @@ export default function Pharmacist() {
                 id
                 name
                 email
-                password
                 age
                 gender
                 address

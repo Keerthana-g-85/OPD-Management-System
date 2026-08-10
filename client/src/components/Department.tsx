@@ -32,6 +32,10 @@ export default function Departments() {
     const response = await request(
       "http://localhost:3040/graphql",
       GET_DEPARTMENTS,
+      {},
+      {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
     );
     console.log(response);
     return response.getDepartment.departments;
@@ -47,6 +51,9 @@ export default function Departments() {
         "http://localhost:3040/graphql",
         ADD_DEPARTMENT,
         { input: { name: department.name, status: department.status } },
+        {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
       );
       console.log(response);
     } catch (error) {
@@ -71,6 +78,9 @@ export default function Departments() {
         "http://localhost:3040/graphql",
         DELETE_DEPARTMENT,
         { input: { id: id } },
+        {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
       );
       console.log(response);
     } catch (error) {
@@ -87,12 +97,19 @@ export default function Departments() {
   });
 
   async function updateDepartment(row: Department) {
-    return request("http://localhost:3040/graphql", UPDATE_DEPARTMENT, {
-      input: {
-        id: row.id,
-        status: !row.status,
+    return request(
+      "http://localhost:3040/graphql",
+      UPDATE_DEPARTMENT,
+      {
+        input: {
+          id: row.id,
+          status: !row.status,
+        },
       },
-    });
+      {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    );
   }
   const updateDepartmentMutation = useMutation({
     mutationFn: updateDepartment,

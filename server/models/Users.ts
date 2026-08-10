@@ -31,7 +31,6 @@ export default class Users {
   @Column({ type: "varchar" })
   email!: string;
 
-  @Field(() => String)
   @Column({ type: "varchar" })
   password!: string;
 
@@ -40,6 +39,7 @@ export default class Users {
   age!: number;
 
   @Field(() => String)
+
   @Column({ type: "varchar" })
   gender!: string;
 

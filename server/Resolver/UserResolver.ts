@@ -9,14 +9,16 @@ import GetUser from "../Arguments/User/GetUser.js";
 import UpdateUserArguments from "../Arguments/User/UpdateUser.js";
 
 const userService = new UserService();
-@Authorized()
+
 @Resolver(() => Users)
 export default class UserResolver {
+  @Authorized()
   @Mutation(() => UserResponse)
   addUser(@Arg("input", () => CreateUserArguments) input: CreateUserArguments) {
     return userService.createUser(input);
   }
 
+  @Authorized()
   @Query(() => UserResponse)
   getUser(@Args(() => GetUser) args: GetUser) {
     return userService.getUser(args);
@@ -27,6 +29,7 @@ export default class UserResolver {
     return userService.loginUser(input);
   }
 
+  @Authorized()
   @Mutation(() => UserResponse)
   editUser(
     @Arg("input", () => UpdateUserArguments) input: UpdateUserArguments,

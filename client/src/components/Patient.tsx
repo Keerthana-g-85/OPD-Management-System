@@ -29,7 +29,6 @@ export default function Patients() {
                 id
                 name
                 email
-                password
                 age
                 gender
                 address
