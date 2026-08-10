@@ -29,4 +29,7 @@ export default class CreateUserArguments {
 
   @Field(() => String)
   image!: string;
+
+  @Field(() => Boolean)
+  status!: boolean;
 }

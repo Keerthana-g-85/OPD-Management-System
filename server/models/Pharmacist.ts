@@ -27,8 +27,4 @@ export default class Pharmacist {
   @Field(() => Int)
   @Column({ type: "int" })
   experience!: number;
-
-  @Field(() => Boolean)
-  @Column({ type: "boolean" })
-  status!: boolean;
 }

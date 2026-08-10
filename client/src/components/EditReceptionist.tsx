@@ -100,7 +100,7 @@ export default function EditReceptionist() {
 
     addReceptionistMutation.mutate();
   }
-  async function handleAddreceptionist() {
+  async function handleUpdatereceptionist() {
     const response = await useApi({
       query: `
       mutation {
@@ -139,7 +139,7 @@ export default function EditReceptionist() {
     return response;
   }
   const addReceptionistMutation = useMutation({
-    mutationFn: handleAddreceptionist,
+    mutationFn: handleUpdatereceptionist,
     onSuccess: async () => {
       await queryClient.invalidateQueries({
         queryKey: ["receptionists"],

@@ -1,4 +1,3 @@
-import * as React from "react";
 import { styled, useTheme } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
@@ -19,7 +18,10 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import AddBoxIcon from "@mui/icons-material/AddBox";
 import { Outlet, useNavigate } from "react-router";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { addToken } from "../redux/LoginSlice";
+import { jwtDecode } from "jwt-decode";
+import { useState, useEffect } from "react";
 
 const drawerWidth = 240;
 
@@ -84,9 +86,10 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 
 export default function Home() {
   const theme = useTheme();
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
   const navigate = useNavigate();
   const user = useSelector((state: any) => state.login.user);
+  const dispatch = useDispatch();
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -107,6 +110,26 @@ export default function Home() {
       text: "Appointment",
       icon: <AddBoxIcon />,
       path: "/appointment",
+    },
+    {
+      text: "Doctor",
+      icon: <AddBoxIcon />,
+      path: "/doctors",
+    },
+    {
+      text: "Receptionist",
+      icon: <AddBoxIcon />,
+      path: "/receptionist",
+    },
+    {
+      text: "Parmacist",
+      icon: <AddBoxIcon />,
+      path: "/pharmacist",
+    },
+    {
+      text: "Patient",
+      icon: <AddBoxIcon />,
+      path: "/patients",
     },
   ];
 
@@ -131,25 +154,14 @@ export default function Home() {
       icon: <AddBoxIcon />,
       path: "/dashboard",
     },
+    { text: "Logout", icon: <AddBoxIcon />, path: "" },
+  ];
+
+  let pharmacistItems = [
     {
-      text: "Doctor",
+      text: "Prescription Generated",
       icon: <AddBoxIcon />,
-      path: "/doctors",
-    },
-    {
-      text: "Receptionist",
-      icon: <AddBoxIcon />,
-      path: "/receptionist",
-    },
-    {
-      text: "Parmacist",
-      icon: <AddBoxIcon />,
-      path: "/pharmacist",
-    },
-    {
-      text: "Patient",
-      icon: <AddBoxIcon />,
-      path: "/patients",
+      path: "/pres_gen_appoints",
     },
   ];
 
@@ -159,6 +171,13 @@ export default function Home() {
     menuItems = [...menuItems, ...doctorItems];
   } else if (user.role === "receptionists") {
     menuItems = [...menuItems, ...receptionistItems];
+  } else if (user.role === "pharmacists") {
+    menuItems = [...menuItems, ...pharmacistItems];
+  }
+  function handleLogout() {
+    localStorage.removeItem("token");
+    dispatch(addToken(""));
+    navigate("/", { replace: true });
   }
 
   return (
@@ -211,7 +230,15 @@ export default function Home() {
         <List>
           {menuItems.map((item) => (
             <ListItem key={item.text}>
-              <ListItemButton onClick={() => navigate(item.path)}>
+              <ListItemButton
+                onClick={() => {
+                  if (item.text === "Logout") {
+                    handleLogout();
+                  } else {
+                    navigate(item.path);
+                  }
+                }}
+              >
                 <ListItemIcon>{item.icon}</ListItemIcon>
                 <ListItemText primary={item.text} />
               </ListItemButton>

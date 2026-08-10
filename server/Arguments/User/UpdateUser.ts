@@ -29,4 +29,7 @@ export default class UpdateUserArguments {
 
   @Field(() => String, { nullable: true })
   image?: string;
+
+  @Field(() => Boolean, { nullable: true })
+  status?: boolean;
 }

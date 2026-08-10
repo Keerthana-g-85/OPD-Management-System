@@ -1,19 +1,17 @@
 import { gql } from "graphql-request";
 
-export const GET_DOCTORS = gql`
-  query GetDoctor {
-    getDoctor {
+export const GET_PATIENT = gql`
+  query Query($getPatientId: ID) {
+    getPatient(id: $getPatientId) {
       success
       message
-      doctors {
+      patient {
         id
-        qualification
-        experience
-        charges
         users {
           id
           name
           email
+          password
           age
           gender
           address
@@ -21,11 +19,14 @@ export const GET_DOCTORS = gql`
           role
           image
           status
+          createdAt
+          updatedAt
         }
-        department {
-          id
-          name
-        }
+        height
+        weight
+        marital_status
+        occupation
+        allergies
       }
     }
   }

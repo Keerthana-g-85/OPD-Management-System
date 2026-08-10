@@ -21,6 +21,7 @@ import {
 import { useState } from "react";
 import { ADD_DEPARTMENT } from "../graphql/mutations/ADD_DEPARTMENT";
 import { DELETE_DEPARTMENT } from "../graphql/mutations/DELETE_DEPARTMENT";
+import { UPDATE_DEPARTMENT } from "../graphql/mutations/UPDATE_DEPARTMENT";
 
 export default function Departments() {
   const [department, setDepartment] = useState({ name: "", status: true });
@@ -63,22 +64,38 @@ export default function Departments() {
     },
   });
 
-  async function deleteDepartment(id : string ){
-    console.log(id)
-    try{
-        const response = await request(
+  async function deleteDepartment(id: string) {
+    console.log(id);
+    try {
+      const response = await request(
         "http://localhost:3040/graphql",
         DELETE_DEPARTMENT,
         { input: { id: id } },
       );
       console.log(response);
-
-    }catch(error){
-        console.log(error)
+    } catch (error) {
+      console.log(error);
     }
   }
   const deleteDepartmentMutataion = useMutation({
     mutationFn: deleteDepartment,
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: ["departments"],
+      });
+    },
+  });
+
+  async function updateDepartment(row: Department) {
+    return request("http://localhost:3040/graphql", UPDATE_DEPARTMENT, {
+      input: {
+        id: row.id,
+        status: !row.status,
+      },
+    });
+  }
+  const updateDepartmentMutation = useMutation({
+    mutationFn: updateDepartment,
     onSuccess: async () => {
       await queryClient.invalidateQueries({
         queryKey: ["departments"],
@@ -158,11 +175,19 @@ export default function Departments() {
                   {row.name}
                 </TableCell>
                 <TableCell align="right">
-                  {row.status ? "Active" : "Not Active"}
+                  {/* {row.status ? "Active" : "Not Active"} */}
+                  <Button onClick={() => updateDepartmentMutation.mutate(row)}>
+                    {row.status ? "Activate" : "Deactivate"}
+                  </Button>
                 </TableCell>
                 <TableCell align="right">
-                  <Button>Edit</Button>
-                  <Button onClick={()=>{deleteDepartmentMutataion.mutate(row.id)}}>Delete</Button>
+                  <Button
+                    onClick={() => {
+                      deleteDepartmentMutataion.mutate(row.id);
+                    }}
+                  >
+                    Delete
+                  </Button>
                 </TableCell>
               </TableRow>
             ))}

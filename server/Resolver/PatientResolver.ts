@@ -1,15 +1,16 @@
-import { Resolver, Query, Mutation, Arg } from "type-graphql";
+import { Resolver, Query, Mutation, Arg, Args } from "type-graphql";
 import PatientService from "../Service/PatientService.js";
 import PatientResponse from "../Response/PatientResponse.js";
 import CreatePatientArguments from "../Arguments/Patient/CreatePatient.js";
 import UpdatepatientArguments from "../Arguments/Patient/UpdatePatient.js";
+import GetPatientArguments from "../Arguments/Patient/GetPatient.js";
 
 const patientService = new PatientService();
 @Resolver()
 export default class PatientResolver {
   @Query(() => PatientResponse)
-  getPatient() {
-    return patientService.getPatient();
+  getPatient(@Args(()=>GetPatientArguments) args:GetPatientArguments) {
+    return patientService.getPatient(args);
   }
 
   @Mutation(() => PatientResponse)

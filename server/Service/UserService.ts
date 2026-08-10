@@ -128,6 +128,7 @@ export default class UserService {
     address,
     phone,
     image,
+    status
   }: UpdateUserArguments) {
     try {
       const user = await this.userRepo.findOneBy({ id: id });
@@ -142,6 +143,7 @@ export default class UserService {
         address: address || user.address,
         phone: phone || user.phone,
         image: image || user.image,
+        status : status ?? user.status
       };
       await this.userRepo.update({ id: id }, { ...userInput });
     } catch (error) {

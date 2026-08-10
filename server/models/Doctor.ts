@@ -20,7 +20,7 @@ export default class Doctor {
 
   @Field(() => Users)
   @OneToOne(() => Users, { onDelete: "CASCADE" })
-  @JoinColumn({name : "user_id"})
+  @JoinColumn({ name: "user_id" })
   users!: Users;
 
   @Field(() => Department)
@@ -39,8 +39,4 @@ export default class Doctor {
   @Field(() => Int)
   @Column({ type: "int" })
   charges!: number;
-
-  @Field(()=>Boolean)
-  @Column({ type : "boolean" , default: true})
-  status! : boolean
 }

@@ -6,7 +6,7 @@ import type { Patient } from "../Types";
 import useApi from "./Api";
 import { useSelector } from "react-redux";
 
-export default function Patient() {
+export default function Patients() {
   const navigate = useNavigate();
   const role = useSelector((state: any) => state.login.user?.role);
   // const queryClient = useQueryClient();

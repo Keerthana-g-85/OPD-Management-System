@@ -1,35 +1,30 @@
 import { gql } from "graphql-request";
 
-export const GET_DOCTOR_APPOINMENTS = gql`
-  query GetDoctorAppointment($id: ID!) {
-    getDoctorAppointment(doctor_id: $id) {
+export const GET_PRESCRIPTION_APPOINTMENTS = gql`
+  query GetPrescriptionGeneratedAppointments {
+    getPrescriptionGeneratedAppointments {
       success
       message
       appointment {
         id
         appointment_date
+        status
         slot {
           slot
-          id
         }
         patient {
-          users {
-            id
-            name
-          }
           id
-          height
-          weight
-          marital_status
-          occupation
-          allergies
+          users {
+            name
+            email
+          }
         }
         doctor {
+          id
           users {
             name
           }
         }
-        status
       }
     }
   }

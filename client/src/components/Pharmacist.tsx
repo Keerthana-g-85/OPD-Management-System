@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import useApi from "./Api";
 import { Button, Card, CardMedia, Typography } from "@mui/material";
 import Grid from "@mui/material/Grid";
@@ -8,6 +8,7 @@ import { useSelector } from "react-redux";
 export default function Pharmacist() {
   const navigate = useNavigate();
   const role = useSelector((state: any) => state.login.user?.role);
+  const queryClient = useQueryClient();
   async function getPharmacist() {
     try {
       const response = await useApi({
@@ -19,7 +20,6 @@ export default function Pharmacist() {
             id
             qualification
             experience
-            status
             users {
                 id
                 name
@@ -31,6 +31,7 @@ export default function Pharmacist() {
                 phone
                 role
                 image
+                status
                 createdAt
                 updatedAt
             }
@@ -53,6 +54,35 @@ export default function Pharmacist() {
   const { data: parmacist } = useQuery({
     queryKey: ["parmacist"],
     queryFn: getPharmacist,
+  });
+
+  async function handleEdit(data: Pharmacist) {
+    const response = await useApi({
+      query: `
+    mutation {
+      editPharmacist(
+        input: {
+            id : "${data.users.id}"
+            status: ${!data.users.status}
+        }
+    ) {
+        success
+        message
+    }
+    }
+  `,
+    });
+    console.log(response);
+    return response;
+  }
+
+  const editPharmacistMutation = useMutation({
+    mutationFn: handleEdit,
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: ["parmacist"],
+      });
+    },
   });
   return (
     <>
@@ -92,6 +122,9 @@ export default function Pharmacist() {
                   >
                     {data.users.name}
                   </Typography>
+                  <Button onClick={() => editPharmacistMutation.mutate(data)}>
+                    {data.users.status ? "Active" : "Not Active"}
+                  </Button>
                   <hr />
                   <Typography>Email : {data.users.email}</Typography>
                   <Typography>Age : {data.users.age}</Typography>

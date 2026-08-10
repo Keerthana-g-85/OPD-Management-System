@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import useApi from "./Api";
 import { Button, Card, CardMedia, Typography } from "@mui/material";
 import Grid from "@mui/material/Grid";
@@ -7,6 +7,7 @@ import { useNavigate } from "react-router";
 import { useSelector } from "react-redux";
 export default function Receptionist() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const role = useSelector((state: any) => state.login.user?.role);
   async function getReceptionists() {
     try {
@@ -26,6 +27,7 @@ export default function Receptionist() {
             phone
             role
             image
+            status 
             createdAt
             updatedAt
         }
@@ -46,6 +48,35 @@ export default function Receptionist() {
   const { data: receptionists } = useQuery({
     queryKey: ["receptionists"],
     queryFn: getReceptionists,
+  });
+
+  async function handleEdit(data: Users) {
+    const response = await useApi({
+      query: `
+    mutation {
+      editPharmacist(
+        input: {
+            id : "${data.id}"
+            status: ${!data.status}
+        }
+    ) {
+        success
+        message
+    }
+    }
+  `,
+    });
+    console.log(response);
+    return response;
+  }
+
+  const editReceptionistMutation = useMutation({
+    mutationFn: handleEdit,
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: ["receptionists"],
+      });
+    },
   });
   return (
     <>
@@ -85,6 +116,9 @@ export default function Receptionist() {
                   >
                     {data.name}
                   </Typography>
+                  <Button onClick={() => editReceptionistMutation.mutate(data)}>
+                    {data.status ? "Active" : "Not Active"}
+                  </Button>
                   <hr />
                   <Typography>Email : {data.email}</Typography>
                   <Typography>Age : {data.age}</Typography>

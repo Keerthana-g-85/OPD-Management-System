@@ -1,3 +1,4 @@
+import type CancelAppointmentArguments from "../Arguments/Appointment/CancelAppointment.js";
 import type CreateAppointmentArguments from "../Arguments/Appointment/CreateAppointmentArguments.js";
 import type { GetAppointmentArgument } from "../Arguments/Appointment/GetAppointment.js";
 import { database } from "../database.js";
@@ -118,7 +119,7 @@ export default class AppoitmentService {
           where: {
             doctor: {
               users: {
-                id: args.doctor_id, 
+                id: args.doctor_id,
               },
             },
           },
@@ -144,6 +145,67 @@ export default class AppoitmentService {
       return {
         success: false,
         message: " unable to get the doctors slot",
+      };
+    }
+  }
+  async getPrescriptionGeneratedAppointments() {
+    try {
+      const appointment = await this.appoitmentRepo.find({
+        where: {
+          status: APStatus.prescription_generated,
+        },
+        relations: {
+          slot: true,
+          doctor: {
+            users: true,
+          },
+          patient: {
+            users: true,
+          },
+        },
+      });
+
+      return {
+        success: true,
+        message: "Prescription generated appointments",
+        appointment,
+      };
+    } catch (error) {
+      console.log(error);
+
+      return {
+        success: false,
+        message: "Error while getting prescription generated appointments",
+      };
+    }
+  }
+
+  async cancelAppointment({id} : CancelAppointmentArguments) {
+    try {
+      const appointment = await this.appoitmentRepo.findOneBy({
+        id,
+      });
+
+      if (!appointment) {
+        return {
+          success: false,
+          message: "Appointment not found",
+        };
+      }
+      appointment.status = APStatus.cancelled;
+
+      await this.appoitmentRepo.save(appointment);
+
+      return {
+        success: true,
+        message: "Appointment cancelled successfully",
+      };
+    } catch (error) {
+      console.log(error);
+
+      return {
+        success: false,
+        message: "Error while cancelling appointment",
       };
     }
   }

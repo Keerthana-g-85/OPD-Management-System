@@ -9,6 +9,7 @@ export interface Users {
   gender: string;
   address: string;
   image: string;
+  status: boolean;
 }
 export interface Department {
   id: string;
@@ -21,7 +22,6 @@ export interface Doctors {
   qualification: string;
   experience: string;
   charges: string;
-  status: boolean;
 }
 
 export interface Patient {

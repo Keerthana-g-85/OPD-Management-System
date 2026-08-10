@@ -104,6 +104,7 @@ export default class DoctorService {
         password: hashPassword,
         role,
         image,
+        status,
       });
 
       const userId = await this.usersRepo.save(user);
@@ -121,7 +122,6 @@ export default class DoctorService {
           qualification,
           experience,
           charges,
-          status,
         });
 
         await this.doctorRepo.save(doctors);
@@ -156,6 +156,7 @@ export default class DoctorService {
         address: input.address || user.address,
         phone: input.phone || user.phone,
         image: input.image || user.image,
+        status: input.status ?? user.status,
       };
       const userData: Users = {
         ...user,
@@ -173,7 +174,6 @@ export default class DoctorService {
           qualification: input.qualification || doctor.qualification,
           experience: input.experience || doctor.experience,
           charges: input.charges || doctor.charges,
-          status: input.status ?? doctor.status,
         };
         console.log(input);
         await this.doctorRepo.update({ id: doctor.id }, doctorInput);

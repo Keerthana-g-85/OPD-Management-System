@@ -1,13 +1,21 @@
-import { Arg, Mutation, Resolver } from "type-graphql";
-import PrescriptionService from "../Service/PrescriptionService.js";
-import CreatePrescriptionArguments from "../Arguments/Prescription/CreatePrescriptionArguments.js";
-import PrescriptionResponse from "../Response/PrescriptionResponse.js";
+import { Resolver, Query, Args } from "type-graphql";
 
-const prescriptionService = new PrescriptionService()
+import PrescriptionService from "../Service/PrescriptionService.js";
+import PrescriptionResponse from "../Response/PrescriptionResponse.js";
+import GetPrescriptionArguments from "../Arguments/Prescription/GetPrescription.js";
+const prescriptionService = new PrescriptionService();
 @Resolver()
-export default class PrescriptionResolver{
-    @Mutation(()=>PrescriptionResponse)
-    addPrescription(@Arg("input" ,()=>CreatePrescriptionArguments ) input : CreatePrescriptionArguments){
-        return prescriptionService.addPrescription(input)
-    }
+export default class PrescriptionResolver {
+  // @Mutation(()=>PrescriptionResponse)
+  // addPrescription(@Arg("input" ,()=>CreatePrescriptionArguments ) input : CreatePrescriptionArguments){
+  //     return prescriptionService.addPrescription(input)
+  // }
+
+  @Query(() => PrescriptionResponse)
+  getPrescriptions(
+    @Args(() => GetPrescriptionArguments)
+    args: GetPrescriptionArguments,
+  ) {
+    return prescriptionService.getPrescriptions(args.appointment_id);
+  }
 }

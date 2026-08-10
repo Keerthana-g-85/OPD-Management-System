@@ -16,6 +16,7 @@ export default function Doctors() {
 
   async function handleDoctors() {
     const data = await request("http://localhost:3040/graphql", GET_DOCTORS);
+    console.log(data.getDoctor.doctors)
     return data.getDoctor.doctors;
   }
   const { data: doctor } = useQuery({
@@ -30,7 +31,7 @@ export default function Doctors() {
       editDoctor(
         input: {
             id : "${data.users.id}"
-            status: ${!data.status}
+            status: ${!data.users.status}
         }
     ) {
         success
@@ -92,7 +93,7 @@ export default function Doctors() {
                     Dr. {data.users.name}
                   </Typography>
                   <Button onClick={() => editDoctorMutation.mutate(data)}>
-                    {data.status ? "Active" : "Not Active"}
+                    {data.users.status ? "Active" : "Not Active"}
                   </Button>
                   <hr />
                   <Typography>Email : {data.users.email}</Typography>

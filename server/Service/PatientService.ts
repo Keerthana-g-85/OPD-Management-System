@@ -3,29 +3,54 @@ import { database } from "../database.js";
 import Patient from "../models/Patient.js";
 import Users from "../models/Users.js";
 import UpdatepatientArguments from "../Arguments/Patient/UpdatePatient.js";
+import type GetPatientArguments from "../Arguments/Patient/GetPatient.js";
+import { GraphQLError } from "graphql";
 
 export default class PatientService {
   private patientRepo = database.getRepository(Patient);
   private usersRepo = database.getRepository(Users);
-  async getPatient() {
+  async getPatient({ id }: GetPatientArguments) {
     try {
+      if (id) {
+        const patient = await this.patientRepo.findOne({
+          where: { id },
+          relations: {
+            users: true,
+          },
+        });
+
+        if (!patient) {
+          return {
+            success: false,
+            message: "Patient not found",
+            patient: null,
+          };
+        }
+
+        return {
+          success: true,
+          message: "Patient Details",
+          patient,
+        };
+      }
+
       const patients = await this.patientRepo.find({
-        relations: { users: true },
+        relations: {
+          users: true,
+        },
       });
+
       return {
         success: true,
-        message: "Getting patient",
+        message: "All Patients",
         patients,
       };
     } catch (error) {
       console.log(error);
-      throw {
-        success: false,
-        message: "Error while getting patient",
-      };
+
+      throw new GraphQLError("Error while getting patient");
     }
   }
-
   async createPatient({
     name,
     email,

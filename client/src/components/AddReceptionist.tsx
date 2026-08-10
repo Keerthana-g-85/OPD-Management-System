@@ -112,6 +112,7 @@ export default function AddReceptionist() {
             phone: "${receptionist.phone}"
             role: receptionists
             image: "${receptionist.image}"
+            status: true
           }
         ) {
           success

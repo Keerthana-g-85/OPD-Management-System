@@ -64,6 +64,7 @@ export default class PharmacistService {
         password: hashPassword,
         role,
         image,
+        status,
       });
 
       const userId = await this.usersRepo.save(user);
@@ -72,7 +73,6 @@ export default class PharmacistService {
           users: userId,
           qualification,
           experience,
-          status,
         });
 
         await this.pharmacistRepo.save(pharmacists);
@@ -90,17 +90,17 @@ export default class PharmacistService {
     }
   }
 
-  async updatePharmacist(input: UpdatePharmacistArguments):  Promise<{
-    success: boolean;
-    message: string;
-} | 
-  GraphQLError>  {
+  async updatePharmacist(input: UpdatePharmacistArguments): Promise<
+    | {
+        success: boolean;
+        message: string;
+      }
+    | GraphQLError
+  > {
     try {
       const user = await this.usersRepo.findOneBy({ id: input.id });
       if (!user) {
-        throw new GraphQLError(
-          "pharmacist not present pharmacists",
-        ) 
+        throw new GraphQLError("pharmacist not present pharmacists");
       }
       const userInput = {
         name: input.name || user.name,
@@ -110,6 +110,8 @@ export default class PharmacistService {
         address: input.address || user.address,
         phone: input.phone || user.phone,
         image: input.image || user.image,
+
+        status: input.status ?? user.status,
       };
       const userData: Users = {
         ...user,
@@ -126,10 +128,12 @@ export default class PharmacistService {
         const pharmacistInput = {
           qualification: input.qualification || pharmacist.qualification,
           experience: input.experience || pharmacist.experience,
-          status: input.status ?? pharmacist.status,
         };
         console.log(input.status);
-        await this.pharmacistRepo.update({ id: pharmacist.id }, pharmacistInput);
+        await this.pharmacistRepo.update(
+          { id: pharmacist.id },
+          pharmacistInput,
+        );
       } else {
         console.log("No pharmacist");
       }
@@ -138,15 +142,12 @@ export default class PharmacistService {
         message: "pharmacist updated",
       };
     } catch (error) {
-      console.log('bfxgf', error);
-      throw new GraphQLError(
-          "Error while updating the pharmacists",
-          {
-            extensions: {
-    code: 'FORBIDDEN',
-  },
-          }
-        ) 
+      console.log("bfxgf", error);
+      throw new GraphQLError("Error while updating the pharmacists", {
+        extensions: {
+          code: "FORBIDDEN",
+        },
+      });
     }
   }
 }

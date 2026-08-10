@@ -27,76 +27,92 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   "&:nth-of-type(odd)": {
     backgroundColor: theme.palette.action.hover,
   },
-  // hide last border
   "&:last-child td, &:last-child th": {
     border: 0,
   },
 }));
+
 export default function DoctorAppointment() {
   const id = useSelector((state: any) => state.login.user?.id);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+
   async function getDoctorAppointment() {
-    console.log(id);
     const response = await request(
       "http://localhost:3040/graphql",
       GET_DOCTOR_APPOINMENTS,
       { id: id },
     );
-    console.log(response);
+
     return response.getDoctorAppointment.appointment;
   }
+
   const { data: doctor_appointment } = useQuery({
     queryKey: ["doctor_appoinment", id],
     queryFn: getDoctorAppointment,
     enabled: !!id,
   });
-  console.log(doctor_appointment);
+
   return (
-    <>
-      <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 700 }} aria-label="customized table">
-          <TableHead>
-            <TableRow>
-              <StyledTableCell>Patient Name</StyledTableCell>
-              <StyledTableCell align="right">Appointment Date</StyledTableCell>
-              <StyledTableCell align="right">Slot</StyledTableCell>
-              <StyledTableCell align="right">Status</StyledTableCell>
-              <StyledTableCell align="right">View Patient Details</StyledTableCell>
-               <StyledTableCell align="right">Consultation</StyledTableCell>
-              {/* <StyledTableCell align="right">Occuption</StyledTableCell>
-              <StyledTableCell align="right">Allergies</StyledTableCell>
-              <StyledTableCell align="right">Marital Status</StyledTableCell> */}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {doctor_appointment?.map((row) => (
-              <StyledTableRow key={row.id}>
-                <StyledTableCell component="th" scope="row">
-                  {row.patient.users.name}
-                </StyledTableCell>
-                <StyledTableCell align="right">
-                  {row.appointment_date}
-                </StyledTableCell>
-                <StyledTableCell align="right">{row.slot.slot}</StyledTableCell>
-                <StyledTableCell align="right">{row.status}</StyledTableCell>
-                 <StyledTableCell align="right"><Button>View </Button></StyledTableCell>
-                  <StyledTableCell align="right"><Button  onClick={() => {
-                        navigate("/add_consultation", { state: { row } });
-                      }}>Consultation</Button></StyledTableCell>
-                {/* <StyledTableCell align="right">
-                  {row.patient.occupation}
-                </StyledTableCell>
-                <StyledTableCell align="right">
-                  {row.patient.allergies ? "Yes" : "No"}
-                </StyledTableCell>
-                <StyledTableCell align="right">
-                  {row.patient.marital_status ? "Yes" : "No"}
-                </StyledTableCell> */}
-              </StyledTableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-    </>
+    <TableContainer component={Paper}>
+      <Table sx={{ minWidth: 700 }} aria-label="customized table">
+        <TableHead>
+          <TableRow>
+            <StyledTableCell>Patient Name</StyledTableCell>
+            <StyledTableCell align="right">Appointment Date</StyledTableCell>
+            <StyledTableCell align="right">Slot</StyledTableCell>
+            <StyledTableCell align="right">Status</StyledTableCell>
+            <StyledTableCell align="right">
+              View Patient Details
+            </StyledTableCell>
+            <StyledTableCell align="right">Consultation</StyledTableCell>
+          </TableRow>
+        </TableHead>
+
+        <TableBody>
+          {doctor_appointment?.map((row) => (
+            <StyledTableRow key={row.id}>
+              <StyledTableCell component="th" scope="row">
+                {row.patient.users.name}
+              </StyledTableCell>
+
+              <StyledTableCell align="right">
+                {row.appointment_date}
+              </StyledTableCell>
+
+              <StyledTableCell align="right">{row.slot.slot}</StyledTableCell>
+
+              <StyledTableCell align="right">{row.status}</StyledTableCell>
+
+              <StyledTableCell align="right">
+                <Button
+                  onClick={() => {
+                    console.log(row.patient.id)
+                    navigate("/patient", {
+                      state: {
+                        data: row.patient.id,
+                      },
+                    });
+                  }}
+                >
+                  View
+                </Button>
+              </StyledTableCell>
+
+              <StyledTableCell align="right">
+                <Button
+                  onClick={() => {
+                    navigate("/add_consultation", {
+                      state: { row },
+                    });
+                  }}
+                >
+                  Consultation
+                </Button>
+              </StyledTableCell>
+            </StyledTableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
   );
 }

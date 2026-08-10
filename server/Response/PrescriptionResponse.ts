@@ -1,4 +1,5 @@
-import { ObjectType, Field } from "type-graphql";
+import { Field, ObjectType } from "type-graphql";
+import Prescription from "../models/Prescription.js";
 
 @ObjectType()
 export default class PrescriptionResponse {
@@ -7,4 +8,7 @@ export default class PrescriptionResponse {
 
   @Field(() => String)
   message!: string;
+
+  @Field(() => [Prescription], { nullable: true })
+  prescriptions?: Prescription[];
 }

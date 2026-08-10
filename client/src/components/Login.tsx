@@ -33,7 +33,7 @@ export default function Login() {
       if (response.data.data.loginUser.success === true) {
         dispatch(addToken(response.data.data.loginUser.accesstoken));
         localStorage.setItem("token", response.data.data.loginUser.accesstoken);
-        nav("/dashboard");
+        nav("/dashboard", { replace: true });
       }
     } catch (error) {
       console.log(error);
@@ -41,10 +41,23 @@ export default function Login() {
   }
   return (
     <>
-      <Box>
-        <Paper>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          minHeight: "90vh",
+        }}
+      >
+        <Paper
+          sx={{
+            width: 400,
+            padding: 3,
+          }}
+        >
           <Typography>E-mail</Typography>
           <TextField
+            fullWidth
             value={login.email}
             onChange={(e) => {
               setLogin({ ...login, email: e.target.value });
@@ -52,12 +65,16 @@ export default function Login() {
           />
           <Typography>Password</Typography>
           <TextField
+            fullWidth
             value={login.password}
             onChange={(e) => {
               setLogin({ ...login, password: e.target.value });
             }}
           />
-          <Button onClick={handleLogin}>Login</Button>
+          <br />
+          <Button sx={{ mt: 3 }} variant="contained" onClick={handleLogin}>
+            Login
+          </Button>
         </Paper>
       </Box>
     </>

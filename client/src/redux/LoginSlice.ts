@@ -12,14 +12,12 @@ const loginSlice = createSlice({
   initialState,
   reducers: {
     addToken: (state, action) => {
-      return {
-        ...state,
-        token: action.payload,
-      };
+      state.token = action.payload;
+
+      state.user = action.payload ? jwtDecode(action.payload) : null;
     },
   },
 });
 
 export const { addToken } = loginSlice.actions;
-
 export default loginSlice.reducer;

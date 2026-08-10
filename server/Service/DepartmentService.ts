@@ -4,6 +4,7 @@ import type CreateDepartmentArguments from "../Arguments/Department/CreateDepart
 import { database } from "../database.js";
 import Department from "../models/Department.js";
 import type DeleteDepartmentArguments from "../Arguments/Department/DeleteDepartment.js";
+import type UpdateDepartmentArguments from "../Arguments/Department/UpdateDepartment.js";
 
 export default class DepartmentService {
   private departmentRepo = database.getRepository(Department);
@@ -32,7 +33,11 @@ export default class DepartmentService {
 
   async getDepartment() {
     try {
-      const departments = await this.departmentRepo.find();
+      const departments = await this.departmentRepo.find({
+        order: {
+          name: "ASC",
+        },
+      });
       return {
         success: true,
         message: "All departments",
@@ -63,5 +68,30 @@ export default class DepartmentService {
       console.log(error);
     }
     throw new GraphQLError("Error while editing ");
+  }
+
+  async updateDepartment({ id, status }: UpdateDepartmentArguments) {
+    try {
+      const department = await this.departmentRepo.findOneBy({ id });
+
+      if (!department) {
+        throw new GraphQLError("Department not found ");
+      }
+
+      const departmentInput = {
+        status: status ?? department.status,
+      };
+
+      await this.departmentRepo.update({ id }, departmentInput);
+
+      return {
+        success: true,
+        message: "Department updated successfully",
+      };
+    } catch (error) {
+      console.log(error);
+
+      throw new GraphQLError("Error while updating department");
+    }
   }
 }

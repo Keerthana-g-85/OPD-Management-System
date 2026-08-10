@@ -4,9 +4,8 @@ import {
   Column,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
-  CreateDateColumn 
+  CreateDateColumn,
 } from "typeorm";
-
 
 export enum Role {
   patient = "patient",
@@ -56,9 +55,13 @@ export default class Users {
   @Column({ type: "enum", enum: Role })
   role!: Role;
 
-  @Field(()=>String)
-  @Column({type : "varchar" , default:null})
-  image! : string;
+  @Field(() => String)
+  @Column({ type: "varchar", default: null })
+  image!: string;
+
+  @Field(() => Boolean)
+  @Column({ type: "boolean" })
+  status!: boolean;
 
   @Field(() => Date)
   @CreateDateColumn()

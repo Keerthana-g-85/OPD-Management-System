@@ -11,4 +11,7 @@ export default class PatientResponse {
 
   @Field(() => [Patient], { nullable: true })
   patients?: Patient[];
+
+  @Field(()=>Patient , {nullable:true })
+  patient? : Patient
 }
