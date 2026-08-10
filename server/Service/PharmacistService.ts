@@ -23,10 +23,7 @@ export default class PharmacistService {
       };
     } catch (error) {
       console.log(error);
-      return {
-        success: false,
-        message: "Error while getting the pharmacists",
-      };
+      throw new GraphQLError("Error while getting the pharmacists")
     }
   }
 
@@ -47,10 +44,7 @@ export default class PharmacistService {
     try {
       const userEmail = await this.usersRepo.findOneBy({ email: email });
       if (userEmail) {
-        return {
-          success: false,
-          message: "User already present",
-        };
+        throw new GraphQLError("User already present")
       }
       const salt = bcrypt.genSaltSync(10);
       const hashPassword = await bcrypt.hash(password, salt);
@@ -83,10 +77,7 @@ export default class PharmacistService {
       };
     } catch (error) {
       console.log(error);
-      return {
-        success: false,
-        message: "Error while creating the pharmacists",
-      };
+      throw new GraphQLError("Error while creating pharmacists")
     }
   }
 

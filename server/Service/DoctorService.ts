@@ -1,3 +1,4 @@
+import { GraphQLError } from "graphql";
 import type CreateDoctorArguments from "../Arguments/Doctor/CreateDoctor.js";
 import type GetDoctorArguments from "../Arguments/Doctor/GetDoctor.js";
 import type UpdateDoctorArguments from "../Arguments/Doctor/UpdateDoctor.js";
@@ -44,10 +45,7 @@ export default class DoctorService {
       };
     } catch (error) {
       console.log(error);
-      throw {
-        success: false,
-        message: "Error while getting the doctors",
-      };
+      throw new GraphQLError("Error while getting doctors");
     }
   }
 
@@ -87,10 +85,7 @@ export default class DoctorService {
       const depeartmentRepo = database.getRepository(Department);
       const userEmail = await this.usersRepo.findOneBy({ email: email });
       if (userEmail) {
-        throw {
-          success: false,
-          message: "User already present",
-        };
+        throw new GraphQLError("User already present");
       }
       const salt = bcrypt.genSaltSync(10);
       const hashPassword = await bcrypt.hash(password, salt);
@@ -110,10 +105,7 @@ export default class DoctorService {
       const userId = await this.usersRepo.save(user);
       const departmentId = await depeartmentRepo.findOneBy({ id: department });
       if (!departmentId) {
-        throw {
-          success: false,
-          message: "Department not found",
-        };
+        throw new GraphQLError("Department not found");
       }
       if (userId) {
         const doctors = this.doctorRepo.create({
@@ -132,10 +124,7 @@ export default class DoctorService {
       };
     } catch (error) {
       console.log(error);
-      throw {
-        success: false,
-        message: "Error while creating the doctors",
-      };
+      throw new GraphQLError("Error while creating the doctors");
     }
   }
 
@@ -143,10 +132,7 @@ export default class DoctorService {
     try {
       const user = await this.usersRepo.findOneBy({ id: input.id });
       if (!user) {
-        return {
-          success: false,
-          message: "Doctor not present doctors",
-        };
+        throw new GraphQLError("Doctor not present");
       }
       const userInput = {
         name: input.name || user.name,
@@ -186,10 +172,7 @@ export default class DoctorService {
       };
     } catch (error) {
       console.log(error);
-      return {
-        success: false,
-        message: "Error while updating the doctors",
-      };
+      throw new GraphQLError("Error while updating doctors ");
     }
   }
 }

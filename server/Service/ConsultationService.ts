@@ -3,6 +3,7 @@ import { database } from "../database.js";
 import Consultation from "../models/Consultation.js";
 import Prescription from "../models/Prescription.js";
 import Appointment, { APStatus } from "../models/Appointment.js";
+import { GraphQLError } from "graphql";
 
 export default class ConsultationService {
   private consultationRepo = database.getRepository(Consultation);
@@ -63,10 +64,7 @@ export default class ConsultationService {
       };
     } catch (error) {
       console.log(error);
-      return {
-        success: false,
-        message: "Error while creating consultation",
-      };
+      throw new GraphQLError("Error while creating consultation")
     }
   }
 }

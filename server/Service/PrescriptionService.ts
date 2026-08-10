@@ -1,3 +1,4 @@
+import { GraphQLError } from "graphql";
 import type CreatePrescriptionArguments from "../Arguments/Prescription/CreatePrescriptionArguments.js";
 import { database } from "../database.js";
 import Consultation from "../models/Consultation.js";
@@ -64,11 +65,7 @@ export default class PrescriptionService {
       };
     } catch (error) {
       console.log(error);
-
-      return {
-        success: false,
-        message: "Error while getting prescriptions",
-      };
+      throw new GraphQLError("Error while getting prescriptions");
     }
   }
 }

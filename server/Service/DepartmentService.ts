@@ -24,10 +24,7 @@ export default class DepartmentService {
         message: "Department successfully created",
       };
     } catch (error) {
-      return {
-        success: false,
-        message: "Error while creating department",
-      };
+      throw new GraphQLError("Error while creating department")
     }
   }
 
@@ -45,10 +42,7 @@ export default class DepartmentService {
       };
     } catch (error) {
       console.log(error);
-      return {
-        success: false,
-        message: "Error while getting department",
-      };
+      throw new GraphQLError("Error while getting department")
     }
   }
 

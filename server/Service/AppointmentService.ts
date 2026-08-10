@@ -1,3 +1,4 @@
+import { GraphQLError } from "graphql";
 import type CancelAppointmentArguments from "../Arguments/Appointment/CancelAppointment.js";
 import type CreateAppointmentArguments from "../Arguments/Appointment/CreateAppointmentArguments.js";
 import type { GetAppointmentArgument } from "../Arguments/Appointment/GetAppointment.js";
@@ -17,10 +18,7 @@ export default class AppoitmentService {
     try {
       const patient = await this.patientRepo.findOneBy({ id: patient_id });
       if (!patient) {
-        return {
-          success: false,
-          message: "Please register first",
-        };
+        throw new GraphQLError("Please register first");
       }
 
       const appoitmentExist = await this.appoitmentRepo.findOne({
@@ -40,10 +38,7 @@ export default class AppoitmentService {
         },
       });
       if (appoitmentExist) {
-        return {
-          success: false,
-          message: "slot is already booked.",
-        };
+        throw new GraphQLError("Slot already booked");
       }
       const appointment = this.appoitmentRepo.create({
         appointment_date,
@@ -60,10 +55,7 @@ export default class AppoitmentService {
       };
     } catch (error) {
       console.log(error);
-      return {
-        success: false,
-        message: "Error while Booking Appointment",
-      };
+      throw new GraphQLError("Error while booking appointment");
     }
   }
 
@@ -86,10 +78,7 @@ export default class AppoitmentService {
         appointment,
       };
     } catch (error) {
-      throw {
-        success: false,
-        message: "Error while getting the appointment",
-      };
+      throw new GraphQLError("Error while getting appointment");
     }
   }
 
@@ -142,10 +131,7 @@ export default class AppoitmentService {
       }
     } catch (error) {
       console.log(error);
-      return {
-        success: false,
-        message: " unable to get the doctors slot",
-      };
+      throw new GraphQLError("Unable to get doctor appointment");
     }
   }
   async getPrescriptionGeneratedAppointments() {
@@ -172,41 +158,35 @@ export default class AppoitmentService {
       };
     } catch (error) {
       console.log(error);
-
-      return {
-        success: false,
-        message: "Error while getting prescription generated appointments",
-      };
+      throw new GraphQLError(
+        "Error while getting prescription generated appointments",
+      );
     }
   }
 
-  async cancelAppointment({id} : CancelAppointmentArguments) {
-    try {
-      const appointment = await this.appoitmentRepo.findOneBy({
-        id,
-      });
+  // async cancelAppointment({ id }: CancelAppointmentArguments) {
+  //   try {
+  //     const appointment = await this.appoitmentRepo.findOneBy({
+  //       id,
+  //     });
 
-      if (!appointment) {
-        return {
-          success: false,
-          message: "Appointment not found",
-        };
-      }
-      appointment.status = APStatus.cancelled;
+  //     if (!appointment) {
+  //       return {
+  //         success: false,
+  //         message: "Appointment not found",
+  //       };
+  //     }
+  //     appointment.status = APStatus.cancelled;
 
-      await this.appoitmentRepo.save(appointment);
+  //     await this.appoitmentRepo.save(appointment);
 
-      return {
-        success: true,
-        message: "Appointment cancelled successfully",
-      };
-    } catch (error) {
-      console.log(error);
-
-      return {
-        success: false,
-        message: "Error while cancelling appointment",
-      };
-    }
-  }
+  //     return {
+  //       success: true,
+  //       message: "Appointment cancelled successfully",
+  //     };
+  //   } catch (error) {
+  //     console.log(error);
+  //     throw new GraphQLError("Error while cancelling appointment")
+  //   }
+  // }
 }

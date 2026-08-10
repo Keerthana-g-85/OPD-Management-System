@@ -24,10 +24,7 @@ export default class UserService {
     try {
       const userEmail = await this.userRepo.findOneBy({ email: email });
       if (userEmail) {
-        return {
-          success: false,
-          message: "User already present",
-        };
+        throw new GraphQLError("User already present");
       }
 
       const salt = bcrypt.genSaltSync(10);
@@ -51,10 +48,7 @@ export default class UserService {
       };
     } catch (error) {
       console.log(error);
-      return {
-        success: false,
-        message: "Error while creating the user",
-      };
+      throw new GraphQLError("Error while creating the user");
     }
   }
 
@@ -74,10 +68,7 @@ export default class UserService {
       };
     } catch (error) {
       console.log(error);
-      return {
-        success: false,
-        message: "Error while getting the user",
-      };
+      throw new GraphQLError("Error while getting the user");
     }
   }
 
@@ -85,19 +76,13 @@ export default class UserService {
     try {
       const user = await this.userRepo.findOneBy({ email: email });
       if (!user) {
-        return {
-          success: false,
-          message: "Email not yet registred",
-        };
+        throw new GraphQLError("Email not yet registred");
       }
       console.log(user.role);
 
       const isPassword = await bcrypt.compare(password, user.password);
       if (!isPassword) {
-        return {
-          success: false,
-          message: "Invalid Password",
-        };
+        throw new GraphQLError("Invalid Password");
       }
 
       const accesstoken = jwt.sign(
@@ -112,10 +97,7 @@ export default class UserService {
       };
     } catch (error) {
       console.log(error);
-      return {
-        success: false,
-        message: "Error while loging in",
-      };
+      throw new GraphQLError("Error while logging in ");
     }
   }
 
@@ -128,7 +110,7 @@ export default class UserService {
     address,
     phone,
     image,
-    status
+    status,
   }: UpdateUserArguments) {
     try {
       const user = await this.userRepo.findOneBy({ id: id });
@@ -143,11 +125,12 @@ export default class UserService {
         address: address || user.address,
         phone: phone || user.phone,
         image: image || user.image,
-        status : status ?? user.status
+        status: status ?? user.status,
       };
       await this.userRepo.update({ id: id }, { ...userInput });
     } catch (error) {
       console.log(error);
+      throw new GraphQLError("Error while updating");
     }
   }
 }

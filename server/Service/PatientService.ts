@@ -105,10 +105,7 @@ export default class PatientService {
       };
     } catch (error) {
       console.log(error);
-      throw {
-        success: false,
-        message: "Error while creating patient",
-      };
+      throw new GraphQLError("Error while creating patient")
     }
   }
 
@@ -116,10 +113,7 @@ export default class PatientService {
     try {
       const user = await this.usersRepo.findOneBy({ id: input.id });
       if (!user) {
-        return {
-          success: false,
-          message: "patient not present patients",
-        };
+        throw new GraphQLError("Patient not present")
       }
       const userInput = {
         name: input.name || user.name,
@@ -160,10 +154,7 @@ export default class PatientService {
       };
     } catch (error) {
       console.log(error);
-      return {
-        success: false,
-        message: "Error while updating the patients",
-      };
+      throw new GraphQLError("Error while updating the patients")
     }
   }
 }
