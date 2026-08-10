@@ -38,6 +38,9 @@ export default function PrescriptionAppointments() {
     const response = await request(
       "http://localhost:3040/graphql",
       GET_PRESCRIPTION_APPOINTMENTS,
+      {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
     );
 
     console.log(response);
@@ -66,7 +69,7 @@ export default function PrescriptionAppointments() {
           </TableHead>
 
           <TableBody>
-            {appointments?.map((row) => (
+            {appointments?.map((row:any) => (
               <StyledTableRow key={row.id}>
                 <StyledTableCell component="th" scope="row">
                   {row.patient.users.name}

@@ -44,7 +44,7 @@ export interface Pharmacist {
 export interface Department {
   id: string;
   name: string;
-  status? : boolean
+  status?: boolean;
 }
 
 export interface Slot {
@@ -56,4 +56,17 @@ export interface PrescriptionInput {
   index: number;
   field: "name" | "dosage" | "frequency" | "duration";
   value: string;
+}
+
+export interface WeekAppointment {
+  day: string;
+  count: number;
+}
+
+export interface Prescription {
+  id: string;
+  name: string;
+  dosage: string;
+  frequency: number;
+  duration: number;
 }

@@ -16,6 +16,9 @@ export default function Patient() {
       {
         getPatientId: data,
       },
+      {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
     );
 
     console.log(response.getPatient.patient);

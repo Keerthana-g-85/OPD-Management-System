@@ -41,6 +41,9 @@ export default function DoctorAppointment() {
       "http://localhost:3040/graphql",
       GET_DOCTOR_APPOINMENTS,
       { id: id },
+      {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
     );
 
     return response.getDoctorAppointment.appointment;
@@ -69,7 +72,7 @@ export default function DoctorAppointment() {
         </TableHead>
 
         <TableBody>
-          {doctor_appointment?.map((row) => (
+          {doctor_appointment?.map((row :any) => (
             <StyledTableRow key={row.id}>
               <StyledTableCell component="th" scope="row">
                 {row.patient.users.name}
@@ -86,7 +89,7 @@ export default function DoctorAppointment() {
               <StyledTableCell align="right">
                 <Button
                   onClick={() => {
-                    console.log(row.patient.id)
+                    console.log(row.patient.id);
                     navigate("/patient", {
                       state: {
                         data: row.patient.id,

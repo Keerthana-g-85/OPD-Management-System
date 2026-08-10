@@ -79,7 +79,7 @@ export default function Appointment() {
         <Table sx={{ minWidth: 700 }} aria-label="customized table">
           <TableHead>
             <TableRow>
-              <StyledTableCell >Patient Name</StyledTableCell>
+              <StyledTableCell>Patient Name</StyledTableCell>
               <StyledTableCell align="right">Patient Phone</StyledTableCell>
               <StyledTableCell align="right">Doctor</StyledTableCell>
               <StyledTableCell align="right">Date</StyledTableCell>
@@ -89,16 +89,24 @@ export default function Appointment() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {appoints?.map((row ) => (
+            {appoints?.map((row : any) => (
               <StyledTableRow key={row.id}>
                 <StyledTableCell component="th" scope="row">
                   {row.patient.users.name}
                 </StyledTableCell>
-                <StyledTableCell align="right">{row.patient.users.phone}</StyledTableCell>
-                <StyledTableCell align="right">{row.doctor.users.name}</StyledTableCell>
-                <StyledTableCell align="right">{row.appointment_date}</StyledTableCell>
+                <StyledTableCell align="right">
+                  {row.patient.users.phone}
+                </StyledTableCell>
+                <StyledTableCell align="right">
+                  {row.doctor.users.name}
+                </StyledTableCell>
+                <StyledTableCell align="right">
+                  {row.appointment_date}
+                </StyledTableCell>
                 <StyledTableCell align="right">{row.slot.slot}</StyledTableCell>
-                 <StyledTableCell align="right">{row.doctor.charges}</StyledTableCell>
+                <StyledTableCell align="right">
+                  {row.doctor.charges}
+                </StyledTableCell>
                 <StyledTableCell align="right">{row.status}</StyledTableCell>
               </StyledTableRow>
             ))}

@@ -11,6 +11,7 @@ import {
   TableRow,
 } from "@mui/material";
 import { GET_PRESCRIPTIONS } from "../../graphql/Query/GET_PRESCRIPTION";
+import type { Prescription } from "../../Types";
 
 export default function Prescription() {
   const location = useLocation();
@@ -31,15 +32,11 @@ export default function Prescription() {
     return response.getPrescriptions.prescriptions;
   }
 
-  const { data: prescriptions, isLoading } = useQuery({
+  const { data: prescriptions } = useQuery({
     queryKey: ["prescriptions", appointmentId],
     queryFn: getPrescriptions,
     enabled: !!appointmentId,
   });
-
-  if (isLoading) {
-    return <p>Loading...</p>;
-  }
 
   return (
     <TableContainer component={Paper}>
@@ -54,7 +51,7 @@ export default function Prescription() {
         </TableHead>
 
         <TableBody>
-          {prescriptions?.map((data) => (
+          {prescriptions?.map((data: Prescription) => (
             <TableRow key={data.id}>
               <TableCell>{data.name}</TableCell>
 

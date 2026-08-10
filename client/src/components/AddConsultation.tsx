@@ -47,9 +47,9 @@ export default function AddConsultation() {
     frequency: "",
     duration: "",
   });
-  const location = useLocation()
-  const data = location?.state?.row
-  console.log(data)
+  const location = useLocation();
+  const data = location?.state?.row;
+  console.log(data);
   const navigate = useNavigate();
 
   function handlePrescription({ index, field, value }: PrescriptionInput) {
@@ -96,34 +96,41 @@ export default function AddConsultation() {
     }
   }
 
-async function handleAddConsultation() {
-  try {
-    const response = await request("http://localhost:3040/graphql", ADD_CONSULTATION, {
-      input: {
-        appointment_id: data.id,
-        notes: consultation.notes,
-        follow_up: consultation.follow_up,
-        status: true,
-        prescriptions: prescriptions.map((item) => ({
-          name: item.name,
-          dosage: item.dosage,
-          frequency: Number(item.frequency),
-          duration: Number(item.duration),
-        })),
-      },
-    });
+  async function handleAddConsultation() {
+    try {
+      const response = await request(
+        "http://localhost:3040/graphql",
+        ADD_CONSULTATION,
+        {
+          input: {
+            appointment_id: data.id,
+            notes: consultation.notes,
+            follow_up: consultation.follow_up,
+            status: true,
+            prescriptions: prescriptions.map((item) => ({
+              name: item.name,
+              dosage: item.dosage,
+              frequency: Number(item.frequency),
+              duration: Number(item.duration),
+            })),
+          },
+        },
+        {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      );
 
-    console.log(response);
-  } catch (error) {
-    console.log(error);
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+    }
   }
-}
 
   const addConsultationMutataion = useMutation({
     mutationFn: handleAddConsultation,
     onSuccess: () => {
-    navigate("/doctor_appointment"); 
-  },
+      navigate("/doctor_appointment");
+    },
     // onSuccess: async () => {
     //   await queryClient.invalidateQueries({
     //     queryKey: ["consultation"],
@@ -246,7 +253,7 @@ async function handleAddConsultation() {
               <Button
                 color="error"
                 onClick={() =>
-                  setPrescriptions((prev) => prev.filter((_ , i) => i !== index))
+                  setPrescriptions((prev) => prev.filter((_, i) => i !== index))
                 }
               >
                 Cancel

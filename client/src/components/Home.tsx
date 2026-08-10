@@ -20,8 +20,7 @@ import AddBoxIcon from "@mui/icons-material/AddBox";
 import { Outlet, useNavigate } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import { addToken } from "../redux/LoginSlice";
-import { jwtDecode } from "jwt-decode";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 const drawerWidth = 240;
 
@@ -148,6 +147,18 @@ export default function Home() {
       path: "/bookappoitment",
     },
   ];
+  let studentItems = [
+    {
+      text: "Doctor",
+      icon: <AddBoxIcon />,
+      path: "/doctors",
+    },
+    {
+      text: "Book Appointment",
+      icon: <AddBoxIcon />,
+      path: "/bookappoitment",
+    },
+  ];
   let menuItems = [
     {
       text: "Home",
@@ -173,6 +184,8 @@ export default function Home() {
     menuItems = [...menuItems, ...receptionistItems];
   } else if (user.role === "pharmacists") {
     menuItems = [...menuItems, ...pharmacistItems];
+  } else if (user.role === "patient"){
+    menuItems = [...menuItems, ...studentItems];
   }
   function handleLogout() {
     localStorage.removeItem("token");

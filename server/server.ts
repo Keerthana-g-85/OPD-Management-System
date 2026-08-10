@@ -15,6 +15,7 @@ import ConsultationResolver from "./Resolver/ConsultationResolver.js";
 import PrescriptionResolver from "./Resolver/PrescriptionResolver.js";
 import SlotResolver from "./Resolver/SlotResolver.js";
 import jwt from "jsonwebtoken";
+import AdminDashboardResolver from "./Resolver/AdminResolver.js";
 
 dotenv.config();
 
@@ -31,6 +32,7 @@ const schema = await buildSchema({
     ConsultationResolver,
     PrescriptionResolver,
     SlotResolver,
+    AdminDashboardResolver
   ],
   authChecker: ({ context }, roles) => {
     if (!context.user) {
