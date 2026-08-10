@@ -1,10 +1,11 @@
-import { Arg, Mutation, Resolver, Query } from "type-graphql";
+import { Arg, Mutation, Resolver, Query, Authorized } from "type-graphql";
 import PharmacistService from "../Service/PharmacistService.js";
 import CreatePharmacistArguments from "../Arguments/Pharmacist/CreatePharmacist.js";
 import UpdatePharmacistArguments from "../Arguments/Pharmacist/UpdatePharmacist.js";
 import PharmacistResponse from "../Response/PharmacistResponse.js";
 
 const pharmacistService = new PharmacistService();
+@Authorized()
 @Resolver()
 export default class PharmacistResolver {
   @Query(() => PharmacistResponse)

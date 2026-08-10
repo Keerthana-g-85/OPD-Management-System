@@ -1,4 +1,4 @@
-import { Arg, Mutation, Query, Resolver } from "type-graphql";
+import { Arg, Authorized, Mutation, Query, Resolver } from "type-graphql";
 import DepartmentService from "../Service/DepartmentService.js";
 import CreateDepartmentArguments from "../Arguments/Department/CreateDepartment.js";
 import DepartmentResponse from "../Response/DepartmentResponse.js";
@@ -8,6 +8,7 @@ import UpdateDepartmentArguments from "../Arguments/Department/UpdateDepartment.
 const departmentService = new DepartmentService();
 @Resolver()
 export default class DepartmentResolver {
+  @Authorized()
   @Mutation(() => DepartmentResponse)
   addDepartment(
     @Arg("input", () => CreateDepartmentArguments)
@@ -16,11 +17,13 @@ export default class DepartmentResolver {
     return departmentService.createDepeartment(input);
   }
 
+  @Authorized()
   @Query(() => DepartmentResponse)
   getDepartment() {
     return departmentService.getDepartment();
   }
 
+  @Authorized()
   @Mutation(() => DepartmentResponse)
   deleteDepartment(
     @Arg("input", () => DeleteDepartmentArguments)
@@ -28,6 +31,7 @@ export default class DepartmentResolver {
   ) {
     return departmentService.deleteDepartment(input);
   }
+  @Authorized()
   @Mutation(() => DepartmentResponse)
   updateDepartment(
     @Arg("input", () => UpdateDepartmentArguments)

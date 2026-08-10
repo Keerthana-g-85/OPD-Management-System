@@ -1,4 +1,4 @@
-import { Mutation, Arg, Resolver, Query, Args } from "type-graphql";
+import { Mutation, Arg, Resolver, Query, Args, Authorized } from "type-graphql";
 import UserService from "../Service/UserService.js";
 import CreateUserArguments from "../Arguments/User/CreateUser.js";
 import UserResponse from "../Response/UserResponse.js";
@@ -9,6 +9,7 @@ import GetUser from "../Arguments/User/GetUser.js";
 import UpdateUserArguments from "../Arguments/User/UpdateUser.js";
 
 const userService = new UserService();
+@Authorized()
 @Resolver(() => Users)
 export default class UserResolver {
   @Mutation(() => UserResponse)

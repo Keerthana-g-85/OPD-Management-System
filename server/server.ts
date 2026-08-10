@@ -56,7 +56,7 @@ app.use(
     context: async ({ req }) => {
       try {
         const token = req.headers.authorization?.split(" ")[1];
-        console.log(token);
+        console.log("TOKEN",token);
         if (!token) {
           return {
             user: null,

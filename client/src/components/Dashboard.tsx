@@ -11,6 +11,10 @@ export default function Dashboard() {
     const response = await request(
       "http://localhost:3040/graphql",
       ADMIN_DASHBOARD,
+      {},
+    {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    }
     );
     console.log(response);
     return response.adminDashboard;

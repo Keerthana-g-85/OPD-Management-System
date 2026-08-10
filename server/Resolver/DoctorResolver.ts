@@ -7,6 +7,7 @@ import { Role } from "../models/Users.js";
 import GetDoctorArguments from "../Arguments/Doctor/GetDoctor.js";
 
 const doctorService = new DoctorService();
+@Authorized()
 @Resolver()
 export default class DoctorResolver {
   @Query(() => DoctorResponse)

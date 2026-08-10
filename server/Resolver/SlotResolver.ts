@@ -1,8 +1,9 @@
-import { Query, Resolver } from "type-graphql";
+import { Authorized, Query, Resolver } from "type-graphql";
 import SlotService from "../Service/SlotService.js";
 import SlotResponse from "../Response/SlotResponse.js";
 
 const slotService = new SlotService();
+@Authorized()
 @Resolver()
 export default class SlotResolver {
   @Query(()=>SlotResponse)
